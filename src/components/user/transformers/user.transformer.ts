@@ -8,6 +8,8 @@ export class UserTransformer extends Transformer {
       id: model.id,
       email: model.email,
       username: model.username,
+      phone: model.phone,
+      address: model.address,
       firstName: model.firstName,
       lastName: model.lastName,
       status: model.status,

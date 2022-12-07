@@ -70,6 +70,10 @@ export class ProfileController {
       data.lastName = body.lastName
     }
 
+    data.phone = body.phone ?? null
+
+    data.address = body.address ?? null
+
     const user = await this.userService.update(currentUser.id, data)
 
     return this.response.item(user, new UserTransformer())
