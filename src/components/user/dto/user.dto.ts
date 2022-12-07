@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -18,6 +19,16 @@ export class BaseUserProperties {
   @IsEmail()
   @IsNotEmpty()
   email: string
+
+  @ApiProperty()
+  @IsPhoneNumber()
+  @IsNotEmpty()
+  phone: string
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  address: string
 
   @ApiProperty()
   @IsNotEmpty()

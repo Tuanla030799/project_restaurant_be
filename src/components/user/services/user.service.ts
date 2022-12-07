@@ -34,6 +34,10 @@ export class UserService extends BaseService {
     return (await this.repository.count({ where: { username } })) > 0
   }
 
+  async phoneExist(username: string): Promise<boolean> {
+    return (await this.repository.count({ where: { username } })) > 0
+  }
+
   async generateVerifyToken(id: number): Promise<boolean> {
     const item = await this.update(id, {
       verifyToken: `${this.hashService.md5(
@@ -149,6 +153,8 @@ export class UserService extends BaseService {
     const saveUser = await this.create({
       ...pick(data, [
         'email',
+        'phone',
+        'address',
         'username',
         'password',
         'firstName',
@@ -197,6 +203,8 @@ export class UserService extends BaseService {
       ...pick(data, [
         'email',
         'username',
+        'phone',
+        'address',
         'password',
         'firstName',
         'lastName',

@@ -26,6 +26,15 @@ export class UserEntity extends TimeStampEntity {
   @Column({ type: 'varchar', default: '' })
   lastName: string
 
+  @Column({ type: 'varchar' })
+  phone: string
+
+  @Column({ type: 'varchar' })
+  address: string
+
+  @Column({ type: 'varchar' })
+  avatar: string
+
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.active })
   status: UserStatus
 
