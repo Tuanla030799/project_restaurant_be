@@ -770,10 +770,10 @@
     "@types/jsonwebtoken" "8.5.0"
     jsonwebtoken "8.5.1"
 
-"@nestjs/mapped-types@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-1.2.0.tgz#1bbdbb5c956f0adb3fd76add929137bc6ad3183f"
-  integrity sha512-NTFwPZkQWsArQH8QSyFWGZvJ08gR+R4TofglqZoihn/vU+ktHEJjMqsIsADwb7XD97DhiD+TVv5ac+jG33BHrg==
+"@nestjs/mapped-types@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.4.1.tgz#e7fe038f0bdda7b8f858fa79ca8516b8f9069b1a"
+  integrity sha512-JXrw2LMangSU3vnaXWXVX47GRG1FbbNh4aVBbidDjxT3zlghsoNQY6qyWtT001MCl8lJGo8I6i6+DurBRRxl/Q==
 
 "@nestjs/passport@^7.1.5":
   version "7.1.6"
@@ -831,16 +831,14 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
-"@nestjs/swagger@^6.1.4":
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-6.1.4.tgz#ef48abc401253b3e475d44aba8bcded7975341df"
-  integrity sha512-kE8VjR+NaoKqxg8XqM/YYfALScPh4AcoR8Wywga8/OxHsTHY+MKxqvTpWp7IhCUWSA6xT8nQUpcC9Rt7C+r7Hw==
+"@nestjs/swagger@^4.8.0":
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.8.2.tgz#0a0b3ca1b25146e797ca77addd9fa97f82406c1c"
+  integrity sha512-RSUwcVxrzXF7/b/IZ5lXnYHJ6jIGS9wWRTJKIt1kIaCNWT+0wRfTlAyhQkzs2g35/PTXJEcdIwwY7mBO/bwHzw==
   dependencies:
-    "@nestjs/mapped-types" "1.2.0"
-    js-yaml "4.1.0"
+    "@nestjs/mapped-types" "0.4.1"
     lodash "4.17.21"
     path-to-regexp "3.2.0"
-    swagger-ui-dist "4.15.5"
 
 "@nestjs/testing@^7.6.13":
   version "7.6.18"
@@ -3545,25 +3543,16 @@ fastify-static@^4.0.0:
     fastify-static-deprecated "npm:fastify-static@4.6.1"
     process-warning "^1.0.0"
 
-"fastify-swagger-deprecated@npm:fastify-swagger@5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-5.1.1.tgz#9aae3f7edb629c98e534841c3c0a1347f9321cd1"
-  integrity sha512-7DA0zS8CCV5r+gbLgWdeeKEwLrVbbOxLMJVUfOl1H9+wSildSLD8hok2TLX7s3c28wOjF8+iZRxsz/hBDzfdIw==
+fastify-swagger@^4.9.1:
+  version "4.17.1"
+  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-4.17.1.tgz#bf256a53ed8974a17e25eaa3b98d14362b72c023"
+  integrity sha512-VUo8W7C+YIw/e+YbNTc15Nhl5xa9MpRMPFDKkRgwvgh0cn1mvGgT34sk77mlDclKwiEO471ayW+EFSL0OYXE1A==
   dependencies:
     fastify-plugin "^3.0.0"
     fastify-static "^4.0.0"
     js-yaml "^4.0.0"
     json-schema-resolver "^1.3.0"
     openapi-types "^10.0.0"
-    rfdc "^1.3.0"
-
-fastify-swagger@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-5.2.0.tgz#680cae4352b68b7e064aaaeb36fa1de60ff26dc7"
-  integrity sha512-yKct50Mev9YIrhd2FRO4AChcJM9JwTBCziIjA4C+AI+hV2ystaIklgHVEwHoyqlaeQ+B4gZ1Z5rgOE87i4llLg==
-  dependencies:
-    fastify-swagger-deprecated "npm:fastify-swagger@5.1.1"
-    process-warning "^1.0.0"
 
 fastify@4.10.2:
   version "4.10.2"
@@ -5075,13 +5064,6 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@4.1.0, js-yaml@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
-  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
-  dependencies:
-    argparse "^2.0.1"
-
 js-yaml@^3.13.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
@@ -5089,6 +5071,13 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+js-yaml@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
 
 jsdom@^16.4.0:
   version "16.7.0"
@@ -7519,11 +7508,6 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
-
-swagger-ui-dist@4.15.5:
-  version "4.15.5"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.15.5.tgz#cda226a79db2a9192579cc1f37ec839398a62638"
-  integrity sha512-V3eIa28lwB6gg7/wfNvAbjwJYmDXy1Jo1POjyTzlB6wPcHiGlRxq39TSjYGVjQrUSAzpv+a7nzp7mDxgNy57xA==
 
 swagger-ui-dist@>=4.1.3:
   version "4.10.3"
