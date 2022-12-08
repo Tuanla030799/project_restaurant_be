@@ -55,6 +55,24 @@ export class CreateFoodsTable1669736073166 implements MigrationInterface {
             type: 'float',
           },
           {
+            name: 'liked',
+            type: 'int',
+          },
+          {
+            name: 'soldQuantity',
+            type: 'int',
+          },
+          {
+            name: 'inventory',
+            type: 'enum',
+            enum: ['SOLD', 'STOCKING'],
+          },
+          {
+            name: 'status',
+            type: 'enum',
+            enum: ['PUBLISH', 'HIDE'],
+          },
+          {
             name: 'createdAt',
             type: 'timestamp',
             default: 'NOW()',

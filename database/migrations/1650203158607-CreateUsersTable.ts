@@ -28,6 +28,18 @@ export class CreateUsersTable1650203158607 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'phone',
+            type: 'varchar',
+          },
+          {
+            name: 'address',
+            type: 'varchar',
+          },
+          {
+            name: 'avatar',
+            type: 'varchar',
+          },
+          {
             name: 'firstName',
             default: "''",
             type: 'varchar',
