@@ -29,14 +29,17 @@ export class CreateUsersTable1650203158607 implements MigrationInterface {
           },
           {
             name: 'phone',
+            isNullable: true,
             type: 'varchar',
           },
           {
             name: 'address',
+            isNullable: true,
             type: 'varchar',
           },
           {
             name: 'avatar',
+            isNullable: true,
             type: 'varchar',
           },
           {
