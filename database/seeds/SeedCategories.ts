@@ -1,13 +1,5 @@
 import { CategoryEntity } from './../../src/components/category/entities/category.entity'
 import { Connection } from 'typeorm'
-import {
-  UserEntity,
-  UserStatus,
-} from '../../src/components/user/entities/user.entity'
-import { HashService } from '../../src/shared/services/hash/hash.service'
-import { RoleEntity } from '../../src/components/auth/entities/role.entity'
-import * as _ from 'lodash'
-
 export default class CategoriesTableSeeder {
   async up(connection: Connection): Promise<any> {
     const seed = [

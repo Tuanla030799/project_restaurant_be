@@ -39,11 +39,6 @@ export class FoodProperties {
   rating: number
 
   @ApiProperty()
-  @IsString()
-  @IsOptional()
-  image: string
-
-  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   price: number
