@@ -144,9 +144,9 @@ export class FoodController {
   async readFood(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GetItemResponse> {
-    const Food = await this.foodService.findOneOrFail(id)
+    const food = await this.foodService.findOneOrFail(id)
 
-    return this.response.item(Food, new FoodTransformer())
+    return this.response.item(food, new FoodTransformer())
   }
 
   @Put(':id')

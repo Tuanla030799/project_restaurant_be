@@ -5,7 +5,7 @@ import { PermissionEntity } from '../src/components/auth/entities/permission.ent
 import { RolePermissionEntity } from '../src/components/auth/entities/rolePermission.entity'
 import { PasswordResetEntity } from '../src/components/auth/entities/passwordReset.entity'
 import { CategoryEntity } from '../src/components/category/entities/category.entity'
-import { FoodEntity } from 'src/components/food/entities/food.entity'
+import { FoodEntity } from '../src/components/food/entities/food.entity'
 
 export default (): any => ({
   type: process.env.DB_CONNECTION || 'mysql',
