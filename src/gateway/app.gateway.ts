@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   WebSocketGateway,
   OnGatewayInit,
@@ -67,7 +66,7 @@ export class AppGateway
 
   private async getUser(socket: Socket) {
     const token = socket.handshake.query.token
-    const user: any = await this.jwtService.verify(token)
+    const user: any = await this.jwtService.verify(token as string)
     return user
   }
 
