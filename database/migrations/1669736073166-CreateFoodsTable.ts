@@ -24,7 +24,7 @@ export class CreateFoodsTable1669736073166 implements MigrationInterface {
           {
             name: 'type',
             type: 'enum',
-            enum: ['FOOD', 'DRINK'],
+            enum: ['FOOD', 'DRINK', 'FAST', 'SNACKS'],
           },
           {
             name: 'name',

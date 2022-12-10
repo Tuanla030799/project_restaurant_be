@@ -15,6 +15,8 @@ export enum FoodInventory {
 export enum FoodType {
   drink = 'DRINK',
   food = 'FOOD',
+  fast = 'FAST',
+  snack = 'SNACKS',
 }
 
 @Notifiable()
@@ -25,6 +27,9 @@ export class FoodEntity extends TimeStampEntity {
 
   @Column({ type: 'varchar' })
   slug: string
+
+  @Column({ type: 'int' })
+  categoryId: number
 
   @Column({ type: 'enum', enum: FoodType })
   type: FoodType
