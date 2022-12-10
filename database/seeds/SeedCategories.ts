@@ -13,7 +13,7 @@ export default class CategoriesTableSeeder {
         name: 'Nướng',
         slug: 'nuong',
         thumbnail:
-          'https://pastaxi-manager.onepas.vn//Upload/DanhMucH…nThi/Avatar/638036438381109666-nuong-pasgo.vn.png',
+          'https://pastaxi-manager.onepas.vn//Upload/DanhMucHienThi/Avatar/638036438381109666-nuong-pasgo.vn.png',
       },
       {
         name: 'Buffet',
@@ -31,19 +31,19 @@ export default class CategoriesTableSeeder {
         name: 'Quán nhậu',
         slug: 'quan-nhau',
         thumbnail:
-          'https://pastaxi-manager.onepas.vn//Upload/DanhMucH…Thi/Avatar/638011851008641451-quan-nhau-pasgo.png',
+          'https://pastaxi-manager.onepas.vn//Upload/DanhMucHienThi/Avatar/638011851008641451-quan-nhau-pasgo.png',
       },
       {
         name: 'Món Nhật',
         slug: 'mon-nhat',
         thumbnail:
-          'https://pastaxi-manager.onepas.vn//Upload/DanhMucH…/Avatar/638011867970619295-mon-nhat-ban-pasgo.png',
+          'https://pastaxi-manager.onepas.vn//Upload/DanhMucHienThi/Avatar/638011867970619295-mon-nhat-ban-pasgo.png',
       },
       {
         name: 'Món Việt',
         slug: 'mon-viet',
         thumbnail:
-          'https://pastaxi-manager.onepas.vn//Upload/DanhMucH…nThi/Avatar/638011878657732280-mon-viet-pasgo.png',
+          'https://pastaxi-manager.onepas.vn//Upload/DanhMucHienThi/Avatar/638011878657732280-mon-viet-pasgo.png',
       },
       {
         name: 'Món Hàn',

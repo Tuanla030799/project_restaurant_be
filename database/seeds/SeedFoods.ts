@@ -64,7 +64,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://d1sag4ddilekf6.azureedge.net/compressed/it…bace4e58a120c1c21d35dbb6_1665127519246527822.jpeg',
+          'https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/VNITE2022100707252199243/detail/menueditor_item_35100984bace4e58a120c1c21d35dbb6_1665127519246527822.webp',
       },
       {
         name: 'Set Sashimi 4: Cá Hồi, Cá Ngừ, Cá Cờ Kiếm, Cá Mú Sao, Cá Hồng Biển - 600g',
@@ -83,7 +83,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://d1sag4ddilekf6.azureedge.net/compressed/it…bace4e58a120c1c21d35dbb6_1665127519246527822.jpeg',
+          'https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/VNITE2022100707252199243/detail/menueditor_item_35100984bace4e58a120c1c21d35dbb6_1665127519246527822.webp',
       },
       {
         name: 'Cá quả nướng',
@@ -102,7 +102,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://d1sag4ddilekf6.azureedge.net/compressed/it…bace4e58a120c1c21d35dbb6_1665127519246527822.jpeg',
+          'https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/5-CYWHV2VBANKDE2-CYWHV2VBN2TGVE/detail/4b9c9b2fbf5045ed8ddbd7bb6c9b36b0_1566796241693948468.webp',
       },
       {
         name: 'Dê Ré Song Dương',
@@ -121,7 +121,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://pasgo.vn/Upload/anh-chi-tiet/nha-hang-de-r…-duong-han-thuyen-slide-1-normal-131842416808.jpg',
+          'https://pasgo.vn/Upload/anh-chi-tiet/nha-hang-de-re-song-duong-39-tran-kim-xuyen-5-normal-12072257514.jpg',
       },
       {
         name: 'Bia 333',
@@ -139,7 +139,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://d1sag4ddilekf6.azureedge.net/compressed/it…6d539400c92a38fc1f4d01be1_1606304480814995330.jpg',
+          'https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/VNITE2020112511404846634/detail/menueditor_item_40ba92d6d539400c92a38fc1f4d01be1_1606304480814995330.webp',
       },
       {
         name: 'Cánh gà nướng',
@@ -213,7 +213,7 @@ export default class FoodsTableSeeder {
         inventory: FoodInventory.stocking,
         status: FoodStatus.publish,
         image:
-          'https://d1sag4ddilekf6.azureedge.net/compressed_we…a0b74df989bf1d6a9e13dc8d_1655700816100656194.webp',
+          'https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/VNITE2020080317162133514/detail/menueditor_item_0605fb3354964709a478f4586257c1e6_1635919494285417798.webp',
       },
       {
         name: 'Nem cuốn chay Hà Nội',
