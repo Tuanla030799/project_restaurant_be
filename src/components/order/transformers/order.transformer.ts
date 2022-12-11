@@ -6,11 +6,12 @@ export class OrderTransformer extends Transformer {
     return {
       id: model.id,
       userId: model.userId,
-      seatId: model.seatId,
+      seatIds: JSON.parse(model.seatIds),
       status: model.status,
       time: model.time,
       note: model.note,
       totalPrice: model.totalPrice,
+      amount: model.amount,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     }

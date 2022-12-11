@@ -1,3 +1,4 @@
+import { array } from '@hapi/joi'
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 import { OrderStatus } from '../../src/components/order/entities/order.enum'
 
@@ -19,12 +20,16 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
             type: 'int',
           },
           {
-            name: 'seatId',
-            type: 'int',
+            name: 'seatIds',
+            type: 'varchar'
           },
           {
             name: 'time',
             type: 'datetime',
+          },
+          {
+            name: 'amount',
+            type: 'int',
           },
           {
             name: 'status',

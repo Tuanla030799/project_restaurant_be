@@ -17,11 +17,6 @@ import { CreateOrderDetailDto } from './orderDetail.dto'
 export class OrderProperties {
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  seatId: number
-
-  @ApiProperty()
-  @IsNotEmpty()
   time: Date
 
   @ApiProperty()
@@ -33,6 +28,11 @@ export class OrderProperties {
   @IsNotEmpty()
   @IsNumber()
   totalPrice: number
+  
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  amount: number
 
   @IsArray()
   @ValidateNested()
