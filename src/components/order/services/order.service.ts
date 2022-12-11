@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { identity } from 'lodash'
+import { async } from 'rxjs'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
 import { Connection, Repository, SelectQueryBuilder } from 'typeorm'
@@ -26,6 +27,28 @@ export class OrderService extends BaseService {
     this.orderDetailRepository = this.connection.getCustomRepository(
       OrderDetailRepository,
     )
+  }
+
+  async showOrder(orderId) {
+    const order = await this.repository.findOne({ id: orderId })
+    if (!order) {
+      throw new NotFoundException()
+    }
+
+    const orderDetails = await this.orderDetailRepository.find({where: {orderId: orderId}})
+
+    return {
+      id: order.id,
+      userId: order.userId,
+      seatId: order.seatId,
+      status: order.status,
+      time: order.time,
+      note: order.note,
+      totalPrice: order.totalPrice,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      orderDetails: orderDetails
+    }
   }
 
   async createOrder(userId, data: CreateOrderDto) {

@@ -23,6 +23,7 @@ import { ApiResponseService } from 'src/shared/services/apiResponse/apiResponse.
 import { Auth } from 'src/components/auth/decorators/auth.decorator'
 import { JwtAuthGuard } from 'src/components/auth/guards/jwtAuth.guard'
 import {
+  GetItemResponse,
   GetListPaginationResponse,
   GetListResponse,
 } from 'src/shared/services/apiResponse/apiResponse.interface'
@@ -86,6 +87,19 @@ export class OrderController {
       await queryBuilder.getMany(),
       new OrderTransformer(),
     )
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get order by id' })
+  @ApiOkResponse({ description: 'order entity' })
+  async show(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    try {
+      return await this.orderService.showOrder(id)
+    } catch (err) {
+      return err
+    }
   }
 
   @Post()
