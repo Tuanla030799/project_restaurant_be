@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
 import { identity } from 'lodash'
 import { async } from 'rxjs'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
-import { Connection, Repository, SelectQueryBuilder } from 'typeorm'
+import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm'
 import { FoodRepository } from '../../food/repositories/food.repository'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
@@ -52,19 +52,47 @@ export class OrderService extends BaseService {
   }
 
   async createOrder(userId, data: CreateOrderDto) {
-    const seat = await this.seatRepository.findOne({ id: data.seatId })
+    const seat = await this.seatRepository.findOne({ where: {isReady: true, capacity: MoreThanOrEqual(data.amount) } })
+    let seatIds = [seat?.id]
     if (!seat) {
-      throw new NotFoundException()
+      const seats = await this.seatRepository.find({ where: {isReady: true, capacity: LessThanOrEqual(data.amount) } })
+      seats.forEach(seat => {
+        const secondSeat = seats.find(st => st.id !== seat.id && (st.capacity + seat.capacity) >= data.amount)
+        if (secondSeat) {
+          const sumCapacitySeats = seat.capacity + secondSeat.capacity
+          if (data.amount > sumCapacitySeats) {
+            throw new HttpException({
+              status: HttpStatus.BAD_REQUEST,
+              errorCode: 1000,
+              message: "Khong du ban"
+            }, HttpStatus.BAD_REQUEST);
+          }
+
+          return seatIds = [seat.id, secondSeat.id]
+        } else {
+          seatIds = []
+        }
+      })
+
+      if (seatIds.length < 1) {
+        throw new HttpException({
+          status: HttpStatus.BAD_REQUEST,
+          errorCode: 1000,
+          message: "Khong du ban"
+        }, HttpStatus.BAD_REQUEST);
+      }
     }
+
     const order = this.repository.create({
-      seatId: data.seatId,
+      seatIds: JSON.stringify(seatIds),
       userId: userId,
       time: data.time,
       note: data.note,
       totalPrice: data.totalPrice,
+      amount: data.amount
     })
     await this.repository.save(order)
-
+    console.log("ggg", order)
     const foodIdsParam = data.orderDetails.map((od) => od.foodId)
     const foods = await this.seatRepository.findByIds(foodIdsParam)
     const foodIdsExisted = foods.map((food) => food.id)

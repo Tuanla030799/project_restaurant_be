@@ -7,8 +7,8 @@ export class OrderEntity extends BaseTimeStampEntity {
   @Column({ type: 'int' })
   userId: number
 
-  @Column({ type: 'int' })
-  seatId: number
+  @Column({ type: 'varchar'})
+  seatIds: string
 
   @Column({ type: 'timestamp' })
   time: Date
@@ -21,6 +21,9 @@ export class OrderEntity extends BaseTimeStampEntity {
 
   @Column({ type: 'float' })
   totalPrice: number
+
+  @Column({ type: 'int' })
+  amount: number
 
   @OneToMany(() => OrderDetailEntity, (orderDetail) => orderDetail.order)
   orderDetails: OrderDetailEntity[]
