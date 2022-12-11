@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
+import { OrderStatus } from '../../src/components/order/entities/order.enum'
 
 export class CreateOrderTable1669734655443 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -22,39 +23,22 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
             type: 'int',
           },
           {
-            name: 'firstName',
-            default: "''",
-            type: 'varchar',
-          },
-          {
-            name: 'lastName',
-            default: "''",
-            type: 'varchar',
-          },
-          {
-            name: 'phone',
-            type: 'varchar',
-          },
-          {
             name: 'time',
             type: 'datetime',
           },
           {
             name: 'status',
-            type: 'enum',
-            enum: ['WAITING', 'SUCCESS', 'REJECT'],
+            type: 'int',
+            default: OrderStatus.PENDING
           },
           {
             name: 'note',
             type: 'varchar',
+            isNullable: true
           },
           {
             name: 'totalPrice',
             type: 'float',
-          },
-          {
-            name: 'quantity',
-            type: 'int',
           },
           {
             name: 'createdAt',
