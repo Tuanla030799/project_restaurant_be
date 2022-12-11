@@ -14,16 +14,25 @@ export class CreateSeatsTable1669735504463 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'status',
-            type: 'enum',
-            enum: ['AVAILABLE', 'UNAVAILABLE'],
-          },
-          {
             name: 'capacity',
             type: 'int',
           },
           {
             name: 'content',
+            type: 'varchar',
+          },
+          {
+            name: 'isReady',
+            type: 'boolean',
+            default: true
+          },
+          {
+            name: 'position',
+            type: 'int',
+          },
+          {
+            name: 'image',
+            isNullable: true,
             type: 'varchar',
           },
           {

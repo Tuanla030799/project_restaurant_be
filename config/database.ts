@@ -6,6 +6,7 @@ import { RolePermissionEntity } from '../src/components/auth/entities/rolePermis
 import { PasswordResetEntity } from '../src/components/auth/entities/passwordReset.entity'
 import { CategoryEntity } from '../src/components/category/entities/category.entity'
 import { FoodEntity } from '../src/components/food/entities/food.entity'
+import { SeatEntity } from '../src/components/seat/entities/seat.entity'
 
 export default (): any => ({
   type: process.env.DB_CONNECTION || 'mysql',
@@ -23,6 +24,7 @@ export default (): any => ({
     UserRoleEntity,
     CategoryEntity,
     FoodEntity,
+    SeatEntity
   ],
   // autoLoadEntities: true,
 
