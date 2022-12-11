@@ -32,15 +32,6 @@ export class CreateOrderDetailsTable1669735787932
             type: 'int',
           },
           {
-            name: 'discount',
-            type: 'float',
-          },
-          {
-            name: 'status',
-            type: 'enum',
-            enum: ['AVAILABLE', 'UNAVAILABLE'],
-          },
-          {
             name: 'createdAt',
             type: 'timestamp',
             default: 'NOW()',

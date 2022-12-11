@@ -5,6 +5,7 @@ import { ProfileModule } from './profile/profile.module'
 import { CategoryModule } from './category/category.module'
 import { FoodModule } from './food/food.module'
 import { SeatModule } from './seat/seat.module'
+import { OrderModule } from './order/order.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SeatModule } from './seat/seat.module'
     CategoryModule,
     FoodModule,
     SeatModule,
+    OrderModule,
   ],
 })
 export class ComponentsModule {}

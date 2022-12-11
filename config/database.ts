@@ -7,6 +7,8 @@ import { PasswordResetEntity } from '../src/components/auth/entities/passwordRes
 import { CategoryEntity } from '../src/components/category/entities/category.entity'
 import { FoodEntity } from '../src/components/food/entities/food.entity'
 import { SeatEntity } from '../src/components/seat/entities/seat.entity'
+import { OrderEntity } from '../src/components/order/entities/order.entity'
+import { OrderDetailEntity } from '../src/components/order/entities/orderDetail.entity'
 
 export default (): any => ({
   type: process.env.DB_CONNECTION || 'mysql',
@@ -24,7 +26,9 @@ export default (): any => ({
     UserRoleEntity,
     CategoryEntity,
     FoodEntity,
-    SeatEntity
+    SeatEntity,
+    OrderEntity,
+    OrderDetailEntity
   ],
   // autoLoadEntities: true,
 
