@@ -23,7 +23,6 @@ import {
 } from '@nestjs/swagger'
 
 import { IPaginationOptions } from 'src/shared/services/pagination'
-import { QueryManyDto } from 'src/shared/dto/queryParams.dto'
 import { CreateFoodDto, UpdateFoodDto } from '../dto/food.dto'
 import { FoodService } from '../services/food.service'
 import { FoodTransformer } from '../transformers/food.transformer'
@@ -43,6 +42,8 @@ import { SelectQueryBuilder } from 'typeorm'
 import { FileFastifyInterceptor } from 'fastify-file-interceptor'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
+import { isNil } from 'lodash'
+import { QueryManyFoodDto } from '../dto/queryFood.dto'
 
 @ApiTags('Foods')
 @ApiHeader({
@@ -61,6 +62,7 @@ export class FoodController {
 
   private entity = 'foods'
   private fields = ['name', 'foodType']
+  private relations = ['categories']
 
   @ApiConsumes('multipart/form-data')
   @Post()
@@ -154,12 +156,23 @@ export class FoodController {
   @Get()
   @ApiOperation({ summary: 'Get list foods' })
   @ApiOkResponse({ description: 'List foods with param query' })
-  async readCategories(
-    @Query() query: QueryManyDto,
+  async readFoods(
+    @Query() query: QueryManyFoodDto,
   ): Promise<GetListResponse | GetListPaginationResponse> {
-    const { search, includes, sortBy, sortType } = query
+    const {
+      search,
+      includes,
+      sortBy,
+      sortType,
+      categoryId,
+      type,
+      status,
+      inventory,
+    } = query
 
-    const queryBuilder: SelectQueryBuilder<FoodEntity> =
+    const filters = { categoryId, type, status, inventory }
+
+    let queryBuilder: SelectQueryBuilder<FoodEntity> =
       await this.foodService.queryFood({
         entity: this.entity,
         fields: this.fields,
@@ -167,7 +180,53 @@ export class FoodController {
         includes,
         sortBy,
         sortType,
+        filters,
       })
+
+    let joinAndSelects = []
+
+    if (!isNil(includes)) {
+      const includesParams = Array.isArray(includes) ? includes : [includes]
+
+      joinAndSelects = this.commonService.includesParamToJoinAndSelects({
+        includesParams,
+        relations: this.relations,
+      })
+
+      if (joinAndSelects.length > 0) {
+        console.log('a')
+        joinAndSelects.forEach((joinAndSelect) => {
+          queryBuilder = queryBuilder.leftJoinAndSelect(
+            `${this.entity}.${joinAndSelect}`,
+            `${joinAndSelect}`,
+          )
+        })
+      }
+    }
+
+    if (filters.categoryId && filters.categoryId !== null) {
+      queryBuilder.andWhere(`${this.entity}.categoryId = :categoryId`, {
+        categoryId,
+      })
+    }
+
+    if (filters.type && filters.type !== null) {
+      queryBuilder.andWhere(`${this.entity}.type = :type`, {
+        type,
+      })
+    }
+
+    if (filters.status && filters.status !== null) {
+      queryBuilder.andWhere(`${this.entity}.status = :status`, {
+        status,
+      })
+    }
+
+    if (filters.inventory && filters.inventory !== null) {
+      queryBuilder.andWhere(`${this.entity}.inventory = :inventory`, {
+        inventory,
+      })
+    }
 
     if (query.perPage || query.page) {
       const paginateOption: IPaginationOptions = {
@@ -180,10 +239,10 @@ export class FoodController {
       return this.response.paginate(data, new FoodTransformer())
     }
 
-    return this.response.collection(
-      await queryBuilder.getMany(),
-      new FoodTransformer(),
-    )
+    const foods = await queryBuilder.getMany()
+
+    //in FoodTransformer() joinAndSelects.length > 0 ? joinAndSelects : undefined,
+    return this.response.collection(foods, new FoodTransformer())
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
 import { TimeStampEntity } from '../../base.entity'
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm'
 import { Notifiable } from '../../../shared/services/notification/decorators/notifiable.decorator'
+import { CategoryEntity } from 'src/components/category/entities/category.entity'
 
 export enum FoodStatus {
   publish = 'PUBLISH',
@@ -63,4 +64,11 @@ export class FoodEntity extends TimeStampEntity {
 
   @Column({ type: 'enum', enum: FoodInventory })
   inventory: FoodInventory
+
+  @ManyToOne(() => CategoryEntity, (category) => category.foods)
+  @JoinColumn({
+    name: 'categoryId',
+    referencedColumnName: 'id',
+  })
+  public categories: CategoryEntity
 }

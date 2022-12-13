@@ -58,10 +58,9 @@ export class Transformer implements TransformerInterface {
   }
 
   collection(
-    collection: Entity[],
+    collection: Entity,
     transformer: TransformerInterface,
   ): { data: ResponseEntity[] } {
-
     if (!isArray(collection)) {
       throw new InternalServerErrorException('collection should be an array')
     }

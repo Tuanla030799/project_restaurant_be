@@ -31,7 +31,7 @@ import { UpdateSeatDto } from '../dto/seat.dto'
 import { QueryManyDto } from '../../../shared/dto/queryParams.dto'
 import { SeatTransformer } from '../transformers/seat.transformer'
 
-@ApiTags('Categories')
+@ApiTags('Seats')
 @ApiHeader({
   name: 'Content-Type',
   description: 'application/json',

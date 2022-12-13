@@ -40,6 +40,6 @@ export interface QueryParams {
   sortType?: SortType
   /** include with relation table */
   includes?: string[]
-  /** filter some field with exact value */
-  filter?: { [key: string]: string }
+  /** filters some field with exact value */
+  filters?: { [key: string]: string | number }
 }

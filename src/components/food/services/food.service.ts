@@ -56,7 +56,7 @@ export class FoodService extends BaseService {
       arr.map((i: any) => include.push(i))
     }
 
-    const { entity, fields, keyword, sortBy, sortType } = params
+    const { entity, fields, keyword, sortBy, sortType, filters } = params
 
     const baseQuery: SelectQueryBuilder<FoodEntity> = await this.queryBuilder({
       entity,
@@ -64,6 +64,7 @@ export class FoodService extends BaseService {
       keyword,
       sortBy,
       sortType,
+      filters,
     })
     return baseQuery
   }

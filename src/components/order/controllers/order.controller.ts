@@ -23,7 +23,6 @@ import { ApiResponseService } from 'src/shared/services/apiResponse/apiResponse.
 import { Auth } from 'src/components/auth/decorators/auth.decorator'
 import { JwtAuthGuard } from 'src/components/auth/guards/jwtAuth.guard'
 import {
-  GetItemResponse,
   GetListPaginationResponse,
   GetListResponse,
 } from 'src/shared/services/apiResponse/apiResponse.interface'
@@ -35,7 +34,7 @@ import { OrderTransformer } from '../transformers/order.transformer'
 import { AuthenticatedUser } from '../../auth/decorators/authenticatedUser.decorator'
 import { Me } from '../../user/dto/user.dto'
 
-@ApiTags('Categories')
+@ApiTags('Orders')
 @ApiHeader({
   name: 'Content-Type',
   description: 'application/json',
@@ -92,9 +91,7 @@ export class OrderController {
   @Get(':id')
   @ApiOperation({ summary: 'Get order by id' })
   @ApiOkResponse({ description: 'order entity' })
-  async show(
-    @Param('id', ParseIntPipe) id: number,
-  ) {
+  async show(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.orderService.showOrder(id)
     } catch (err) {

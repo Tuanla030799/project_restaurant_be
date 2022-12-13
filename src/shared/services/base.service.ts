@@ -8,9 +8,10 @@ import {
 import {
   BadRequestException,
   ConflictException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common'
-import { isArray, omit, filter, keys, isUndefined } from 'lodash'
+import { isArray, omit, filter, keys, isUndefined, isNil, omitBy } from 'lodash'
 import { IPaginationOptions, Pagination } from './pagination'
 import { default as slugify } from 'slugify'
 import { DEFAULT_SORT_BY, DEFAULT_SORT_TYPE } from '../constant/constant'
@@ -313,7 +314,7 @@ export class BaseService {
    * Create query builder with search field in entity
    */
   async queryBuilder<T>(params: QueryParams): Promise<SelectQueryBuilder<T>> {
-    const { entity, fields, keyword } = params
+    const { entity, fields, keyword, filters } = params
     const orderBy = params.sortBy ?? DEFAULT_SORT_BY
     const orderType = params.sortType ?? DEFAULT_SORT_TYPE
 
@@ -326,6 +327,10 @@ export class BaseService {
         })
       }
     }
+
+    const filtersChanged = omitBy(filters, isNil)
+
+    Logger.log(filtersChanged)
 
     baseQuery = baseQuery.orderBy(`${entity}.${orderBy}`, orderType)
 

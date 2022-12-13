@@ -1,3 +1,4 @@
+import { CategoryTransformer } from 'src/components/category/transformers/category.transformer'
 import { Transformer } from '../../../shared/transformers/transformer'
 import { FoodEntity } from '../entities/food.entity'
 
@@ -22,5 +23,9 @@ export class FoodTransformer extends Transformer {
       updatedAt: model.updatedAt,
       deletedAt: model.deletedAt,
     }
+  }
+
+  includeRoles(model: FoodEntity): any {
+    return this.collection(model.categories, new CategoryTransformer())
   }
 }
