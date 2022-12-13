@@ -1,13 +1,14 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
-import { identity } from 'lodash'
-import { async } from 'rxjs'
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
-import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm'
+import { Connection, getConnection, In, LessThanOrEqual, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm'
 import { FoodRepository } from '../../food/repositories/food.repository'
+import { SeatEntity } from '../../seat/entities/seat.entity'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
+import { UserRepository } from '../../user/repositories/user.repository'
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
 import { OrderEntity } from '../entities/order.entity'
+import { OrderStatus } from '../entities/order.enum'
 import { OrderRepository } from '../repositories/order.repository'
 import { OrderDetailRepository } from '../repositories/orderDetail.repository'
 
@@ -18,15 +19,15 @@ export class OrderService extends BaseService {
   public seatRepository: Repository<any>
   public foodRepository: Repository<any>
   public orderDetailRepository: Repository<any>
+  public userRepository: Repository<any>
 
   constructor(private connection: Connection) {
     super()
     this.repository = this.connection.getCustomRepository(OrderRepository)
     this.seatRepository = this.connection.getCustomRepository(SeatRepository)
     this.foodRepository = this.connection.getCustomRepository(FoodRepository)
-    this.orderDetailRepository = this.connection.getCustomRepository(
-      OrderDetailRepository,
-    )
+    this.orderDetailRepository = this.connection.getCustomRepository(OrderDetailRepository)
+    this.userRepository = this.connection.getCustomRepository(UserRepository)
   }
 
   async showOrder(orderId) {
@@ -36,15 +37,28 @@ export class OrderService extends BaseService {
     }
 
     const orderDetails = await this.orderDetailRepository.find({where: {orderId: orderId}})
+    const user = await this.userRepository.findOne({ where: {id: order.userId} })
+    const userAttrs = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      address: user.address,
+      avatar: user.avatar,
+    }
+    const seats = await this.seatRepository.find({ where: {id: In(JSON.parse(order.seatIds))} })
 
     return {
       id: order.id,
-      userId: order.userId,
-      seatId: order.seatId,
+      user: userAttrs,
+      seats: seats,
       status: order.status,
       time: order.time,
       note: order.note,
       totalPrice: order.totalPrice,
+      amount: order.amount,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
       orderDetails: orderDetails
@@ -92,7 +106,7 @@ export class OrderService extends BaseService {
       amount: data.amount
     })
     await this.repository.save(order)
-    console.log("ggg", order)
+
     const foodIdsParam = data.orderDetails.map((od) => od.foodId)
     const foods = await this.seatRepository.findByIds(foodIdsParam)
     const foodIdsExisted = foods.map((food) => food.id)
@@ -119,6 +133,15 @@ export class OrderService extends BaseService {
     const order = await this.repository.findOne({ id: orderId })
     if (!order) {
       throw new NotFoundException()
+    }
+
+    if (data.status == OrderStatus.APPROVE) {
+      await getConnection()
+        .createQueryBuilder()
+        .update(SeatEntity)
+        .set({ isReady: false })
+        .where({id: In(JSON.parse(order.seatIds))})
+        .execute();
     }
 
     return await this.repository.save({
