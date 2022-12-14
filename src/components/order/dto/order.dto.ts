@@ -2,16 +2,11 @@ import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
   IsArray,
-  IsBoolean,
-  IsDate,
-  IsDateString,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator'
-import { isArrayLikeObject } from 'lodash'
 import { CreateOrderDetailDto } from './orderDetail.dto'
 
 export class OrderProperties {
@@ -28,7 +23,7 @@ export class OrderProperties {
   @IsNotEmpty()
   @IsNumber()
   totalPrice: number
-  
+
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

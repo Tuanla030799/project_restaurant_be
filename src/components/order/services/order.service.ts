@@ -1,7 +1,20 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
-import { Connection, getConnection, In, LessThanOrEqual, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm'
+import {
+  Connection,
+  getConnection,
+  In,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm'
 import { FoodRepository } from '../../food/repositories/food.repository'
 import { SeatEntity } from '../../seat/entities/seat.entity'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
@@ -26,7 +39,9 @@ export class OrderService extends BaseService {
     this.repository = this.connection.getCustomRepository(OrderRepository)
     this.seatRepository = this.connection.getCustomRepository(SeatRepository)
     this.foodRepository = this.connection.getCustomRepository(FoodRepository)
-    this.orderDetailRepository = this.connection.getCustomRepository(OrderDetailRepository)
+    this.orderDetailRepository = this.connection.getCustomRepository(
+      OrderDetailRepository,
+    )
     this.userRepository = this.connection.getCustomRepository(UserRepository)
   }
 
@@ -36,8 +51,12 @@ export class OrderService extends BaseService {
       throw new NotFoundException()
     }
 
-    const orderDetails = await this.orderDetailRepository.find({where: {orderId: orderId}})
-    const user = await this.userRepository.findOne({ where: {id: order.userId} })
+    const orderDetails = await this.orderDetailRepository.find({
+      where: { orderId: orderId },
+    })
+    const user = await this.userRepository.findOne({
+      where: { id: order.userId },
+    })
     const userAttrs = {
       id: user.id,
       email: user.email,
@@ -48,7 +67,9 @@ export class OrderService extends BaseService {
       address: user.address,
       avatar: user.avatar,
     }
-    const seats = await this.seatRepository.find({ where: {id: In(JSON.parse(order.seatIds))} })
+    const seats = await this.seatRepository.find({
+      where: { id: In(JSON.parse(order.seatIds)) },
+    })
 
     return {
       id: order.id,
@@ -63,39 +84,52 @@ export class OrderService extends BaseService {
       updatedAt: order.updatedAt,
       fullName: order.fullName,
       phone: order.phone,
-      orderDetails: orderDetails
+      orderDetails: orderDetails,
     }
   }
 
   async createOrder(userId, data: CreateOrderDto) {
-    const seat = await this.seatRepository.findOne({ where: {isReady: true, capacity: MoreThanOrEqual(data.amount) } })
+    const seat = await this.seatRepository.findOne({
+      where: { isReady: true, capacity: MoreThanOrEqual(data.amount) },
+    })
     let seatIds = [seat?.id]
     if (!seat) {
-      const seats = await this.seatRepository.find({ where: {isReady: true, capacity: LessThanOrEqual(data.amount) } })
-      seats.forEach(seat => {
-        const secondSeat = seats.find(st => st.id !== seat.id && (st.capacity + seat.capacity) >= data.amount)
+      const seats = await this.seatRepository.find({
+        where: { isReady: true, capacity: LessThanOrEqual(data.amount) },
+      })
+      seats.forEach((seat) => {
+        const secondSeat = seats.find(
+          (st) =>
+            st.id !== seat.id && st.capacity + seat.capacity >= data.amount,
+        )
         if (secondSeat) {
           const sumCapacitySeats = seat.capacity + secondSeat.capacity
           if (data.amount > sumCapacitySeats) {
-            throw new HttpException({
-              status: HttpStatus.BAD_REQUEST,
-              errorCode: 1000,
-              message: "Khong du ban"
-            }, HttpStatus.BAD_REQUEST);
+            throw new HttpException(
+              {
+                status: HttpStatus.BAD_REQUEST,
+                errorCode: 1000,
+                message: 'Khong du ban',
+              },
+              HttpStatus.BAD_REQUEST,
+            )
           }
 
-          return seatIds = [seat.id, secondSeat.id]
+          return (seatIds = [seat.id, secondSeat.id])
         } else {
           seatIds = []
         }
       })
 
       if (seatIds.length < 1) {
-        throw new HttpException({
-          status: HttpStatus.BAD_REQUEST,
-          errorCode: 1000,
-          message: "Khong du ban"
-        }, HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            errorCode: 1000,
+            message: 'Khong du ban',
+          },
+          HttpStatus.BAD_REQUEST,
+        )
       }
     }
 
@@ -107,7 +141,7 @@ export class OrderService extends BaseService {
       totalPrice: data.totalPrice,
       amount: data.amount,
       fullName: data.fullName,
-      phone: data.phone
+      phone: data.phone,
     })
     await this.repository.save(order)
 
@@ -144,8 +178,8 @@ export class OrderService extends BaseService {
         .createQueryBuilder()
         .update(SeatEntity)
         .set({ isReady: false })
-        .where({id: In(JSON.parse(order.seatIds))})
-        .execute();
+        .where({ id: In(JSON.parse(order.seatIds)) })
+        .execute()
     }
 
     return await this.repository.save({

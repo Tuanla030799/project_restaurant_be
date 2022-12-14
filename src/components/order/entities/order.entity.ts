@@ -7,7 +7,7 @@ export class OrderEntity extends BaseTimeStampEntity {
   @Column({ type: 'int' })
   userId: number
 
-  @Column({ type: 'varchar'})
+  @Column({ type: 'varchar' })
   seatIds: string
 
   @Column({ type: 'timestamp' })
