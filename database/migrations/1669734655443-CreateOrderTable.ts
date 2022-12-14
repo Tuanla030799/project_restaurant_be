@@ -46,6 +46,14 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
             type: 'float',
           },
           {
+            name: 'fullName',
+            type: 'varchar',
+          },
+          {
+            name: 'phone',
+            type: 'varchar',
+          },
+          {
             name: 'createdAt',
             type: 'timestamp',
             default: 'NOW()',

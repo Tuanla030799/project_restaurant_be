@@ -61,6 +61,8 @@ export class OrderService extends BaseService {
       amount: order.amount,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
+      fullName: order.fullName,
+      phone: order.phone,
       orderDetails: orderDetails
     }
   }
@@ -103,7 +105,9 @@ export class OrderService extends BaseService {
       time: data.time,
       note: data.note,
       totalPrice: data.totalPrice,
-      amount: data.amount
+      amount: data.amount,
+      fullName: data.fullName,
+      phone: data.phone
     })
     await this.repository.save(order)
 

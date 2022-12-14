@@ -16,14 +16,20 @@ export class OrderEntity extends BaseTimeStampEntity {
   @Column({ type: 'varchar' })
   note: string
 
-  @Column({ type: 'varchar' })
-  status: string
+  @Column({ type: 'int' })
+  status: number
 
   @Column({ type: 'float' })
   totalPrice: number
 
   @Column({ type: 'int' })
   amount: number
+
+  @Column({ type: 'varchar' })
+  fullName: string
+
+  @Column({ type: 'varchar' })
+  phone: string
 
   @OneToMany(() => OrderDetailEntity, (orderDetail) => orderDetail.order)
   orderDetails: OrderDetailEntity[]
