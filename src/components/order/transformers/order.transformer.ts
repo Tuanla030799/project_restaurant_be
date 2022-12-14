@@ -12,6 +12,8 @@ export class OrderTransformer extends Transformer {
       note: model.note,
       totalPrice: model.totalPrice,
       amount: model.amount,
+      fullName: model.fullName,
+      phone: model.phone,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     }

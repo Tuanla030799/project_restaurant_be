@@ -34,6 +34,16 @@ export class OrderProperties {
   @IsNumber()
   amount: number
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  fullName: string
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  phone: string
+
   @IsArray()
   @ValidateNested()
   @Type(() => CreateOrderDetailDto)

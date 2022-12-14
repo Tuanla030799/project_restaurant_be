@@ -1,7 +1,7 @@
 import { TimeStampEntity } from '../../base.entity'
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm'
 import { Notifiable } from '../../../shared/services/notification/decorators/notifiable.decorator'
-import { CategoryEntity } from 'src/components/category/entities/category.entity'
+import { CategoryEntity } from '../../category/entities/category.entity'
 
 export enum FoodStatus {
   publish = 'PUBLISH',
