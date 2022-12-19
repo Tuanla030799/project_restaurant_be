@@ -41,10 +41,12 @@ export class CreateFoodsTable1669736073166 implements MigrationInterface {
           {
             name: 'discount',
             type: 'float',
+            isNullable: true,
           },
           {
             name: 'rating',
             type: 'int',
+            isNullable: true,
           },
           {
             name: 'image',
@@ -57,20 +59,24 @@ export class CreateFoodsTable1669736073166 implements MigrationInterface {
           {
             name: 'liked',
             type: 'int',
+            isNullable: true,
           },
           {
             name: 'soldQuantity',
             type: 'int',
+            isNullable: true,
           },
           {
             name: 'inventory',
             type: 'enum',
             enum: ['SOLD', 'STOCKING'],
+            isNullable: true,
           },
           {
             name: 'status',
             type: 'enum',
             enum: ['PUBLISH', 'HIDE'],
+            isNullable: true,
           },
           {
             name: 'createdAt',

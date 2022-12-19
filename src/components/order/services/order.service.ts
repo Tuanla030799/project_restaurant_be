@@ -20,6 +20,10 @@ import { SeatEntity } from '../../seat/entities/seat.entity'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
 import { UserRepository } from '../../user/repositories/user.repository'
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
+import {
+  UpdateOrderDetailDto,
+  UpdateOrderDetailsDto,
+} from '../dto/orderDetail.dto'
 import { OrderEntity } from '../entities/order.entity'
 import { OrderStatus } from '../entities/order.enum'
 import { OrderRepository } from '../repositories/order.repository'
@@ -186,6 +190,49 @@ export class OrderService extends BaseService {
       id: orderId,
       status: data.status,
     })
+  }
+
+  async updateOrderDetails(orderId, userId, data: UpdateOrderDetailsDto) {
+    const order = await this.repository.findOne({ id: orderId, userId: userId })
+    if (!order) {
+      throw new NotFoundException()
+    }
+
+    const uniqExistedOrderDetailsParams = data.orderDetails.reduce(
+      (current, next) => {
+        const isAccessPush = !current.some((od) => {
+          od.id === next.id
+        })
+        if (isAccessPush) {
+          current.push(next)
+        }
+        return current
+      },
+      [],
+    )
+    const idsExistedParams = uniqExistedOrderDetailsParams.map((od) => {
+      return od.id
+    })
+    const notExistedOrderDetailsParams = data.orderDetails.filter((od) => {
+      return od['id'] === undefined
+    })
+
+    const existedOrderDetails = await this.orderDetailRepository.findByIds(
+      idsExistedParams,
+    )
+    const existedOrderDetailIds = existedOrderDetails.map((od) => {
+      return od.id
+    })
+    const notFoundIds = idsExistedParams.filter((id) => {
+      !existedOrderDetailIds.includes(id as number)
+    })
+    if (notFoundIds.length > 0) {
+      throw new NotFoundException()
+    }
+
+    console.log('ggg', uniqExistedOrderDetailsParams)
+
+    return 1
   }
 
   async queryOrder(

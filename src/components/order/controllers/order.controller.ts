@@ -33,6 +33,10 @@ import { QueryManyDto } from '../../../shared/dto/queryParams.dto'
 import { OrderTransformer } from '../transformers/order.transformer'
 import { AuthenticatedUser } from '../../auth/decorators/authenticatedUser.decorator'
 import { Me } from '../../user/dto/user.dto'
+import {
+  UpdateOrderDetailDto,
+  UpdateOrderDetailsDto,
+} from '../dto/orderDetail.dto'
 
 @ApiTags('Orders')
 @ApiHeader({
@@ -123,6 +127,26 @@ export class OrderController {
   ) {
     try {
       return await this.orderService.updateOrder(id, data)
+    } catch (err) {
+      return err
+    }
+  }
+
+  @Patch(':id/order_details')
+  @Auth('admin')
+  @ApiOperation({ summary: 'Admin update order by id' })
+  @ApiOkResponse({ description: 'Update order entity' })
+  async updateOrderDetails(
+    @AuthenticatedUser() currentUser: Me,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateOrderDetailsDto,
+  ) {
+    try {
+      return await this.orderService.updateOrderDetails(
+        id,
+        currentUser.id,
+        data,
+      )
     } catch (err) {
       return err
     }

@@ -44,6 +44,7 @@ import { diskStorage } from 'multer'
 import { extname } from 'path'
 import { isNil } from 'lodash'
 import { QueryManyFoodDto } from '../dto/queryFood.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Foods')
 @ApiHeader({
@@ -70,26 +71,17 @@ export class FoodController {
   @ApiOperation({ summary: 'Admin create new food' })
   @ApiOkResponse({ description: 'New food entity' })
   @UseInterceptors(
-    FileFastifyInterceptor('file', {
+    FileInterceptor('image', {
       storage: diskStorage({
-        destination:
-          process.env.APP_ENV === 'local'
-            ? 'public/uploads'
-            : 'dist/public/uploads',
-        filename: (req, file: Express.Multer.File, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('')
-          cb(null, `${randomName}${extname(file.originalname)}`)
+        destination: './public/uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9)
+          const ext = extname(file.originalname)
+          const filename = `${uniqueSuffix}${ext}`
+          callback(null, filename)
         },
       }),
-      fileFilter: (req, file: Express.Multer.File, cb) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-          return new Error('Only image files are allowed!')
-        }
-        cb(null, true)
-      },
     }),
   )
   async createFood(
