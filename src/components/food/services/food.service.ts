@@ -1,5 +1,6 @@
+import { number } from '@hapi/joi'
 import { Injectable } from '@nestjs/common'
-import { assign } from 'lodash'
+import { assign, parseInt } from 'lodash'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
 import { Connection, Repository, SelectQueryBuilder } from 'typeorm'
@@ -25,22 +26,24 @@ export class FoodService extends BaseService {
 
     const generateSlug = await this.generateSlug(data.name)
 
-    const dataWithSlug = assign(data, {
+    const food = this.repository.create({
+      name: data.name,
+      type: data.type,
       slug: generateSlug,
+      summary: data.summary,
+      content: data.content,
+      discount: data.discount,
+      rating: data.rating,
+      price: data.price,
+      liked: Number(data.liked) ? Number(data.liked) : 0,
+      soldQuantity: data.soldQuantity,
+      inventory: data.inventory,
+      status: data.status,
+      categoryId: data.categoryId,
+      image: process.env.APP_URL + '/public/uploads/' + file.filename,
     })
 
-    const newFile = assign({}, file, {
-      key: file.filename,
-      location: process.env.APP_URL + '/public/uploads/' + file.filename,
-    })
-
-    const dataAssignUrlFile = assign(dataWithSlug, {
-      avatar: newFile.location,
-    })
-
-    const image = { ...dataAssignUrlFile }
-
-    await this.save(image)
+    await this.repository.save(food)
   }
 
   async queryFood(

@@ -62,6 +62,10 @@ export class FoodProperties {
   @IsEnum(FoodStatus)
   @IsOptional()
   status: FoodStatus
+
+  @ApiProperty()
+  @IsNumber()
+  categoryId: number
 }
 
 export class CreateFoodDto extends OmitType(FoodProperties, [] as const) {}

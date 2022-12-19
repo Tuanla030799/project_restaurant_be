@@ -1,9 +1,11 @@
+import { Optional } from '@nestjs/common'
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator'
@@ -15,7 +17,7 @@ export class OrderProperties {
   time: Date
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   note: string
 
@@ -50,7 +52,6 @@ export class CreateOrderDto extends OmitType(OrderProperties, [] as const) {}
 
 export class UpdateOrderDto extends PartialType(OrderProperties) {
   @ApiProperty()
-  @IsNotEmpty()
   @IsNumber()
   status: number
 }

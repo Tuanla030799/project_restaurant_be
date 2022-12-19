@@ -10,6 +10,8 @@ import { SharedModule } from './shared/shared.module'
 import { GatewayModule } from './gateway/gateway.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { EventEmitterModule } from '@nestjs/event-emitter'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
   imports: [
@@ -39,6 +41,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
       maxListeners: 10,
       verboseMemoryLeak: false,
       ignoreErrors: false,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '../public'),
+      serveRoot: '/public/',
     }),
   ],
   controllers: [AppController],
