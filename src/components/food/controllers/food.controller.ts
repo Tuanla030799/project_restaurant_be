@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Request,
   UploadedFile,
   UseGuards,
@@ -42,7 +43,7 @@ import { SelectQueryBuilder } from 'typeorm'
 import { FileFastifyInterceptor } from 'fastify-file-interceptor'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
-import { isNil } from 'lodash'
+import { assign, isNil } from 'lodash'
 import { QueryManyFoodDto } from '../dto/queryFood.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -86,7 +87,7 @@ export class FoodController {
   )
   async createFood(
     @UploadedFile() file: Express.Multer.File,
-    @Request() req,
+    @Req() req: Request,
     @Body() data: CreateFoodDto,
   ): Promise<SuccessfullyOperation> {
     console.log('aaaaaaI')
@@ -101,13 +102,12 @@ export class FoodController {
     })
   }
 
-  @ApiConsumes('multipart/form-data')
   @Post('a')
   @Auth('admin')
   @ApiOperation({ summary: 'Admin create new food' })
   @ApiOkResponse({ description: 'New food entity' })
   @UseInterceptors(
-    FileFastifyInterceptor('file', {
+    FileInterceptor('file', {
       storage: diskStorage({
         destination:
           process.env.APP_ENV === 'local'
@@ -121,21 +121,20 @@ export class FoodController {
           cb(null, `${randomName}${extname(file.originalname)}`)
         },
       }),
-      fileFilter: (req, file: Express.Multer.File, cb) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-          return new Error('Only image files are allowed!')
-        }
-        cb(null, true)
-      },
     }),
   )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Request() req,
   ): Promise<SuccessfullyOperation> {
     console.log('aaaaaaI')
 
     console.log(file)
+    const new_file = assign({}, file, {
+      key: file.filename,
+      location: process.env.APP_URL + '/uploads/' + file.filename,
+    })
+
+    console.log(new_file)
 
     return this.response.success({
       message: this.commonService.getMessage({
