@@ -131,7 +131,6 @@ export class FoodController {
   )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Request() req,
   ): Promise<SuccessfullyOperation> {
     console.log('aaaaaaI')
 

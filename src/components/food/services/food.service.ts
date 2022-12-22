@@ -1,6 +1,4 @@
-import { number } from '@hapi/joi'
 import { Injectable } from '@nestjs/common'
-import { assign, parseInt } from 'lodash'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
 import { Connection, Repository, SelectQueryBuilder } from 'typeorm'

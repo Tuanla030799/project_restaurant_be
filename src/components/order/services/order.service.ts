@@ -20,10 +20,7 @@ import { SeatEntity } from '../../seat/entities/seat.entity'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
 import { UserRepository } from '../../user/repositories/user.repository'
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
-import {
-  UpdateOrderDetailDto,
-  UpdateOrderDetailsDto,
-} from '../dto/orderDetail.dto'
+import { UpdateOrderDetailsDto } from '../dto/orderDetail.dto'
 import { OrderEntity } from '../entities/order.entity'
 import { OrderStatus } from '../entities/order.enum'
 import { OrderRepository } from '../repositories/order.repository'
@@ -216,6 +213,8 @@ export class OrderService extends BaseService {
     const notExistedOrderDetailsParams = data.orderDetails.filter((od) => {
       return od['id'] === undefined
     })
+
+    console.log(notExistedOrderDetailsParams)
 
     const existedOrderDetails = await this.orderDetailRepository.findByIds(
       idsExistedParams,
