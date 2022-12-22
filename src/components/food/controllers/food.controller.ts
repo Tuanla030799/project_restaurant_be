@@ -37,14 +37,16 @@ import {
 } from 'src/shared/services/apiResponse/apiResponse.interface'
 import Messages from 'src/shared/message/message'
 import { CommonService } from 'src/shared/services/common.service'
-import { FoodEntity } from '../entities/food.entity'
+import { FoodEntity, FoodStatus } from '../entities/food.entity'
 import { SelectQueryBuilder } from 'typeorm'
 import { FileFastifyInterceptor } from 'fastify-file-interceptor'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
-import { isNil } from 'lodash'
+import _, { isNil, map } from 'lodash'
 import { QueryManyFoodDto } from '../dto/queryFood.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { Me } from 'src/components/user/dto/user.dto'
+import { AuthenticatedUser } from 'src/components/auth/decorators/authenticatedUser.decorator'
 
 @ApiTags('Foods')
 @ApiHeader({
@@ -149,6 +151,7 @@ export class FoodController {
   @ApiOkResponse({ description: 'List foods with param query' })
   async readFoods(
     @Query() query: QueryManyFoodDto,
+    @AuthenticatedUser() currentUser: Me,
   ): Promise<GetListResponse | GetListPaginationResponse> {
     const {
       search,
@@ -216,6 +219,14 @@ export class FoodController {
     if (filters.inventory && filters.inventory !== null) {
       queryBuilder.andWhere(`${this.entity}.inventory = :inventory`, {
         inventory,
+      })
+    }
+
+    // if role just user => food show publish
+    const userRoles = map(currentUser.roles, (r) => r.slug)
+    if (_.includes(userRoles, 'user') && userRoles.length == 1) {
+      queryBuilder.andWhere(`${this.entity}.status = :status`, {
+        status: FoodStatus.publish,
       })
     }
 
