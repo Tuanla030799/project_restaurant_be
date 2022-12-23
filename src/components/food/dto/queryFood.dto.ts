@@ -13,12 +13,12 @@ export class QueryFoodProperties {
 
   @ApiProperty()
   @IsOptional()
-  @IsEnum(FoodType)
+  // @IsEnum(FoodType)
   type: FoodType
 
   @ApiProperty()
   @IsOptional()
-  @IsEnum(FoodStatus)
+  // @IsEnum(FoodStatus)
   status: FoodStatus
 
   @ApiProperty()

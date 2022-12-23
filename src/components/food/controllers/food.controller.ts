@@ -1,3 +1,4 @@
+import { FoodType } from './../entities/food.entity'
 import {
   Body,
   Controller,
@@ -55,7 +56,7 @@ import { AuthenticatedUser } from 'src/components/auth/decorators/authenticatedU
   description: 'application/json',
 })
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('/api/foods')
 export class FoodController {
   constructor(
@@ -83,7 +84,7 @@ export class FoodController {
           const ext = extname(file.originalname)
           const filename = `${uniqueSuffix}${ext}`
           callback(null, filename)
-        }
+        },
       }),
       fileFilter: (req, file, callback) => {
         if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -93,7 +94,7 @@ export class FoodController {
           return callback(err, false)
         }
         callback(null, true)
-      }
+      },
     }),
   )
   async createFood(
@@ -155,7 +156,6 @@ export class FoodController {
       })
 
       if (joinAndSelects.length > 0) {
-        console.log('a')
         joinAndSelects.forEach((joinAndSelect) => {
           queryBuilder = queryBuilder.leftJoinAndSelect(
             `${this.entity}.${joinAndSelect}`,
@@ -190,11 +190,16 @@ export class FoodController {
     }
 
     // if role just user => food show publish
-    const userRoles = map(currentUser.roles, (r) => r.slug)
-    if (_.includes(userRoles, 'user') && userRoles.length == 1) {
-      queryBuilder.andWhere(`${this.entity}.status = :status`, {
-        status: FoodStatus.publish,
-      })
+    const userRoles = map(currentUser?.roles, (r) => r.slug) || []
+    if (
+      !userRoles.length ||
+      (userRoles.includes('user') && userRoles.length == 1)
+    ) {
+      queryBuilder
+        .andWhere(`${this.entity}.status = :status`, {
+          status: FoodStatus.publish,
+        })
+        .orderBy(`${this.entity}.id`, 'ASC')
     }
 
     if (query.perPage || query.page) {

@@ -78,21 +78,21 @@ export class OrderService extends BaseService {
     let seatsByOrder = []
     if (seatIds.length > 0) {
       seatsByOrder = await this.seatRepository.find({
-        where: { id: In(JSON.parse(order.seatIds)) }
+        where: { id: In(JSON.parse(order.seatIds)) },
       })
     }
 
     const notReadySeatIds = await this.notReadySeatIds(null, order)
 
     const readySeats = await this.seatRepository.find({
-      where: {id: Not(In(notReadySeatIds)), isReady: true}
+      where: { id: Not(In(notReadySeatIds)), isReady: true },
     })
 
-    const filterReadySeats = readySeats.filter(s => {
+    const filterReadySeats = readySeats.filter((s) => {
       return !seatIds.includes(s.id)
     })
 
-    const seatAttrs = seatsByOrder.concat(filterReadySeats).map(seat => {
+    const seatAttrs = seatsByOrder.concat(filterReadySeats).map((seat) => {
       const isChoose = seatIds.includes(seat.id)
 
       return {
@@ -102,7 +102,7 @@ export class OrderService extends BaseService {
         content: seat.content,
         position: seat.position,
         isReady: seat.isReady,
-        isChoose: isChoose
+        isChoose: isChoose,
       }
     })
 
@@ -164,28 +164,39 @@ export class OrderService extends BaseService {
     }
 
     if (Object.keys(data).length === 0) {
-      return {id: order.id}
+      return { id: order.id }
     }
 
     const updateFields = (({ status, note, amount, fullName, phone }) => ({
-      status, note, amount, fullName, phone
-    })) (data);
+      status,
+      note,
+      amount,
+      fullName,
+      phone,
+    }))(data)
 
     const notReadySeatIds = await this.notReadySeatIds(data.time, order)
 
     let updateFieldsCopy = {}
     if (data.seatIds?.length > 0) {
-      updateFieldsCopy = Object.assign({}, {id: order.id, seatIds: JSON.stringify(data.seatIds)}, updateFields)
-      const invalidSeatIds = data.seatIds.some(id => {
+      updateFieldsCopy = Object.assign(
+        {},
+        { id: order.id, seatIds: JSON.stringify(data.seatIds) },
+        updateFields,
+      )
+      const invalidSeatIds = data.seatIds.some((id) => {
         return notReadySeatIds.includes(id as number)
-      });
+      })
 
       if (invalidSeatIds) {
-        throw new HttpException({
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: 1002,
-          message: "The seats is already booked!"
-        }, HttpStatus.BAD_REQUEST)
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            errorCode: 1002,
+            message: 'The seats is already booked!',
+          },
+          HttpStatus.BAD_REQUEST,
+        )
       }
 
       const seatIds = JSON.parse(order.seatIds === null ? '[]' : order.seatIds)
@@ -198,24 +209,27 @@ export class OrderService extends BaseService {
           .execute()
       }
     } else {
-      updateFieldsCopy = Object.assign({}, {id: order.id}, updateFields)
+      updateFieldsCopy = Object.assign({}, { id: order.id }, updateFields)
     }
 
-    await this.repository.save({...order, ...updateFieldsCopy})
+    await this.repository.save({ ...order, ...updateFieldsCopy })
 
     if (data.status == OrderStatus.APPROVE) {
       const seatIds = JSON.parse(order.seatIds === null ? '[]' : order.seatIds)
       if (seatIds.length > 0) {
-        const invalidSeatIds = seatIds.some(id => {
+        const invalidSeatIds = seatIds.some((id) => {
           return notReadySeatIds.includes(id as number)
-        });
-    
+        })
+
         if (invalidSeatIds) {
-          throw new HttpException({
-            statusCode: HttpStatus.BAD_REQUEST,
-            errorCode: 1002,
-            message: "The seats is already booked!"
-          }, HttpStatus.BAD_REQUEST)
+          throw new HttpException(
+            {
+              statusCode: HttpStatus.BAD_REQUEST,
+              errorCode: 1002,
+              message: 'The seats is already booked!',
+            },
+            HttpStatus.BAD_REQUEST,
+          )
         }
 
         await getConnection()
@@ -225,28 +239,40 @@ export class OrderService extends BaseService {
           .where({ id: In(seatIds) })
           .execute()
       } else {
-        throw new HttpException({
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: 1003,
-          message: "You haven't chosen a seat yet!"
-        }, HttpStatus.BAD_REQUEST)
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            errorCode: 1003,
+            message: "You haven't chosen a seat yet!",
+          },
+          HttpStatus.BAD_REQUEST,
+        )
       }
     }
 
-    if (data.status == OrderStatus.REJECT || data.status == OrderStatus.FINISH) {
+    if (
+      data.status == OrderStatus.REJECT ||
+      data.status == OrderStatus.FINISH
+    ) {
       await getConnection()
         .createQueryBuilder()
         .update(SeatEntity)
         .set({ isReady: true })
-        .where({ id: In(JSON.parse(order.seatIds === null ? '[]' : order.seatIds)) })
+        .where({
+          id: In(JSON.parse(order.seatIds === null ? '[]' : order.seatIds)),
+        })
         .execute()
     }
 
     let result = {}
     if (data.seatIds?.length > 0) {
-      result = Object.assign({}, {id: order.id, seatIds: data.seatIds}, updateFields)
+      result = Object.assign(
+        {},
+        { id: order.id, seatIds: data.seatIds },
+        updateFields,
+      )
     } else {
-      result = Object.assign({}, {id: order.id}, updateFields)
+      result = Object.assign({}, { id: order.id }, updateFields)
     }
 
     return result
@@ -254,44 +280,57 @@ export class OrderService extends BaseService {
 
   async notReadySeatIds(timeParam, order) {
     const time = timeParam ? timeParam : order.time
-    const timeOrder = new Date(time);
-    const lessTimeOrder = moment(this.plusHours(timeOrder, 2)).format('YYYY-MM-DD HH:mm');
-    const moreTimeOrder = moment(this.subtractHours(timeOrder, 2)).format('YYYY-MM-DD HH:mm');
+    const timeOrder = new Date(time)
+    const lessTimeOrder = moment(this.plusHours(timeOrder, 2)).format(
+      'YYYY-MM-DD HH:mm',
+    )
+    const moreTimeOrder = moment(this.subtractHours(timeOrder, 2)).format(
+      'YYYY-MM-DD HH:mm',
+    )
 
     const orders = await this.repository.find({
       where: [
         {
           id: Not(order.id),
           status: OrderStatus.APPROVE,
-          time: Between(moreTimeOrder, moment(new Date(time)).format('YYYY-MM-DD HH:mm')),
+          time: Between(
+            moreTimeOrder,
+            moment(new Date(time)).format('YYYY-MM-DD HH:mm'),
+          ),
         },
         {
           id: Not(order.id),
           status: OrderStatus.APPROVE,
-          time: Between(moment(new Date(time)).format('YYYY-MM-DD HH:mm'), lessTimeOrder),
-        }
-      ]
+          time: Between(
+            moment(new Date(time)).format('YYYY-MM-DD HH:mm'),
+            lessTimeOrder,
+          ),
+        },
+      ],
     })
 
     const notReadySeatIds = orders.reduce((arr, order) => {
-      return [...arr, ...JSON.parse(order.seatIds === null ? '[]' : order.seatIds)]
+      return [
+        ...arr,
+        ...JSON.parse(order.seatIds === null ? '[]' : order.seatIds),
+      ]
     }, [])
 
     return notReadySeatIds
   }
 
   subtractHours(date, hours) {
-    const dateCopy = new Date(date);
-    dateCopy.setHours(dateCopy.getHours() - hours);
+    const dateCopy = new Date(date)
+    dateCopy.setHours(dateCopy.getHours() - hours)
 
-    return dateCopy;
+    return dateCopy
   }
 
   plusHours(date, hours) {
-    const dateCopy = new Date(date);
-    dateCopy.setHours(dateCopy.getHours() + hours);
+    const dateCopy = new Date(date)
+    dateCopy.setHours(dateCopy.getHours() + hours)
 
-    return dateCopy;
+    return dateCopy
   }
 
   async queryOrder(
