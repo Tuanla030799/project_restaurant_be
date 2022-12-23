@@ -26,7 +26,7 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
           },
           {
             name: 'time',
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
           {
             name: 'amount',
@@ -56,18 +56,18 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
           },
           {
             name: 'createdAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'updatedAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'deletedAt',
             isNullable: true,
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
         ],
       }),

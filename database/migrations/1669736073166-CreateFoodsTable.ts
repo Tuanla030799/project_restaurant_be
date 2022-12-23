@@ -80,18 +80,18 @@ export class CreateFoodsTable1669736073166 implements MigrationInterface {
           },
           {
             name: 'createdAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'updatedAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'deletedAt',
             isNullable: true,
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
         ],
       }),

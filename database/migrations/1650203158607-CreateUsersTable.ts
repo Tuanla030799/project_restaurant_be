@@ -69,27 +69,27 @@ export class CreateUsersTable1650203158607 implements MigrationInterface {
           },
           {
             name: 'verified',
-            default: 0,
+            default: false,
             type: 'boolean',
           },
           {
             name: 'verifiedAt',
             isNullable: true,
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
           {
             name: 'deletedAt',
             isNullable: true,
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
           {
             name: 'createdAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'updatedAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
         ],

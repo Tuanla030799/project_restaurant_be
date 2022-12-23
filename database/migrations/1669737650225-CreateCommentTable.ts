@@ -27,18 +27,18 @@ export class CreateCommentTable1669737650225 implements MigrationInterface {
           },
           {
             name: 'createdAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'updatedAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'deletedAt',
             isNullable: true,
-            type: 'datetime',
+            type: 'timestamp with time zone',
           },
         ],
       }),
