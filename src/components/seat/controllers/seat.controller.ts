@@ -26,7 +26,7 @@ import {
   GetListResponse,
 } from 'src/shared/services/apiResponse/apiResponse.interface'
 import { SeatEntity } from '../entities/seat.entity'
-import { SelectQueryBuilder } from 'typeorm'
+import { createQueryBuilder, SelectQueryBuilder } from 'typeorm'
 import { UpdateSeatDto } from '../dto/seat.dto'
 import { QueryManyDto } from '../../../shared/dto/queryParams.dto'
 import { SeatTransformer } from '../transformers/seat.transformer'
@@ -77,7 +77,9 @@ export class SeatController {
     }
 
     return this.response.collection(
-      await queryBuilder.getMany(),
+      await createQueryBuilder(SeatEntity, 's')
+        .orderBy('s.id', 'ASC')
+        .getMany(),
       new SeatTransformer(),
     )
   }

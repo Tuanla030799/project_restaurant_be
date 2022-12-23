@@ -43,7 +43,7 @@ import { SelectQueryBuilder } from 'typeorm'
   description: 'application/json',
 })
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('/api/categories')
 export class CategoryController {
   constructor(
