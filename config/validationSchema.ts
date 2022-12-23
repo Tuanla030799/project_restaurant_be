@@ -35,9 +35,6 @@ const validationSchema = Joi.object({
   MAIL_PORT: Joi.number().allow('').optional(),
   MAIL_USERNAME: Joi.string().allow('').optional(),
   MAIL_PASSWORD: Joi.string().allow('').optional(),
-  MAIL_ENCRYPTION: Joi.string().allow('').optional(),
-  MAIL_FROM_ADDRESS: Joi.string().email().allow('').allow('null').optional(),
-  MAIL_FROM_NAME: Joi.string().allow('').optional(),
   PORT: Joi.number().default(3000),
 })
 
