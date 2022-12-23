@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   Request,
+  UnsupportedMediaTypeException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -82,8 +83,17 @@ export class FoodController {
           const ext = extname(file.originalname)
           const filename = `${uniqueSuffix}${ext}`
           callback(null, filename)
-        },
+        }
       }),
+      fileFilter: (req, file, callback) => {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+          const err = new UnsupportedMediaTypeException(
+            'Only image files are supported',
+          )
+          return callback(err, false)
+        }
+        callback(null, true)
+      }
     }),
   )
   async createFood(
@@ -94,49 +104,6 @@ export class FoodController {
     console.log('aaaaaaI')
 
     await this.foodService.saveFood({ file, data })
-
-    return this.response.success({
-      message: this.commonService.getMessage({
-        message: Messages.successfullyOperation.create,
-        keywords: [this.entity],
-      }),
-    })
-  }
-
-  @ApiConsumes('multipart/form-data')
-  @Post('a')
-  @Auth('admin')
-  @ApiOperation({ summary: 'Admin create new food' })
-  @ApiOkResponse({ description: 'New food entity' })
-  @UseInterceptors(
-    FileFastifyInterceptor('file', {
-      storage: diskStorage({
-        destination:
-          process.env.APP_ENV === 'local'
-            ? 'public/uploads'
-            : 'dist/public/uploads',
-        filename: (req, file: Express.Multer.File, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('')
-          cb(null, `${randomName}${extname(file.originalname)}`)
-        },
-      }),
-      fileFilter: (req, file: Express.Multer.File, cb) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-          return new Error('Only image files are allowed!')
-        }
-        cb(null, true)
-      },
-    }),
-  )
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<SuccessfullyOperation> {
-    console.log('aaaaaaI')
-
-    console.log(file)
 
     return this.response.success({
       message: this.commonService.getMessage({
