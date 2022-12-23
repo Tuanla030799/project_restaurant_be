@@ -26,17 +26,17 @@ export class CreatePasswordResetTable1650204687090
           {
             name: 'expire',
             isNullable: true,
-            type: 'datetime',
-            default: '(DATE_ADD(NOW(), INTERVAL 2 DAY))',
+            type: 'timestamp with time zone',
+            default: "(CURRENT_TIMESTAMP + INTERVAL '2 DAY')",
           },
           {
             name: 'createdAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
           {
             name: 'updatedAt',
-            type: 'timestamp',
+            type: 'timestamp with time zone',
             default: 'NOW()',
           },
         ],

@@ -238,6 +238,7 @@ export default class FoodsTableSeeder {
     const Foods = seed.map((item) => {
       const food = new FoodEntity()
 
+      food.type = item.type
       food.name = item.name
       food.slug = item.slug
       food.categoryId = item.categoryId

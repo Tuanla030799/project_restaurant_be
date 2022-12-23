@@ -11,7 +11,7 @@ import { OrderEntity } from '../src/components/order/entities/order.entity'
 import { OrderDetailEntity } from '../src/components/order/entities/orderDetail.entity'
 
 export default (): any => ({
-  type: process.env.DB_CONNECTION || 'mysql',
+  type: process.env.DB_CONNECTION || 'postgres',
   host: process.env.DB_HOST,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
