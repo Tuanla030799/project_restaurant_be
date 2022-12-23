@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator'
@@ -29,27 +30,27 @@ export class FoodProperties {
   content: string
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   discount: number
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   rating: number
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   price: number
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   liked: number
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   soldQuantity: number
 
@@ -64,7 +65,7 @@ export class FoodProperties {
   status: FoodStatus
 
   @ApiProperty()
-  @IsNumber()
+  @IsNumberString()
   categoryId: number
 }
 

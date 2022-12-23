@@ -2,6 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
 import { Connection, Repository, SelectQueryBuilder } from 'typeorm'
+import { UpdateOrderDto } from '../../order/dto/order.dto'
+import { OrderEntity } from '../../order/entities/order.entity'
+import { OrderStatus } from '../../order/entities/order.enum'
+import { OrderRepository } from '../../order/repositories/order.repository'
 import { UpdateSeatDto } from '../dto/seat.dto'
 import { SeatEntity } from '../entities/seat.entity'
 import { SeatRepository } from '../repositories/seat.repository'
@@ -10,10 +14,12 @@ import { SeatRepository } from '../repositories/seat.repository'
 export class SeatService extends BaseService {
   public repository: Repository<any>
   public entity: any = SeatEntity
+  public orderRepository: Repository<OrderEntity>
 
   constructor(private connection: Connection) {
     super()
     this.repository = this.connection.getCustomRepository(SeatRepository)
+    this.orderRepository = this.connection.getCustomRepository(OrderRepository)
   }
 
   async updateSeat(seatId, data: UpdateSeatDto) {
@@ -50,6 +56,7 @@ export class SeatService extends BaseService {
       sortBy,
       sortType,
     })
+
     return baseQuery
   }
 }

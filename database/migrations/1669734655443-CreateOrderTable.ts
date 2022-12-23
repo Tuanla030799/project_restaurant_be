@@ -21,7 +21,8 @@ export class CreateOrderTable1669734655443 implements MigrationInterface {
           },
           {
             name: 'seatIds',
-            type: 'varchar'
+            type: 'varchar',
+            isNullable: true
           },
           {
             name: 'time',

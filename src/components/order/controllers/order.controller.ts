@@ -28,7 +28,7 @@ import {
 } from 'src/shared/services/apiResponse/apiResponse.interface'
 import { OrderEntity } from '../entities/order.entity'
 import { SelectQueryBuilder } from 'typeorm'
-import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
+import { CreateOrderDto, ReadySeatsDto, UpdateOrderDto } from '../dto/order.dto'
 import { QueryManyDto } from '../../../shared/dto/queryParams.dto'
 import { OrderTransformer } from '../transformers/order.transformer'
 import { AuthenticatedUser } from '../../auth/decorators/authenticatedUser.decorator'
@@ -90,6 +90,7 @@ export class OrderController {
   }
 
   @Get(':id')
+  @Auth('admin')
   @ApiOperation({ summary: 'Get order by id' })
   @ApiOkResponse({ description: 'order entity' })
   async show(@Param('id', ParseIntPipe) id: number) {
@@ -124,26 +125,6 @@ export class OrderController {
   ) {
     try {
       return await this.orderService.updateOrder(id, data)
-    } catch (err) {
-      return err
-    }
-  }
-
-  @Patch(':id/order_details')
-  @Auth('admin')
-  @ApiOperation({ summary: 'Admin update order by id' })
-  @ApiOkResponse({ description: 'Update order entity' })
-  async updateOrderDetails(
-    @AuthenticatedUser() currentUser: Me,
-    @Param('id', ParseIntPipe) id: number,
-    @Body() data: UpdateOrderDetailsDto,
-  ) {
-    try {
-      return await this.orderService.updateOrderDetails(
-        id,
-        currentUser.id,
-        data,
-      )
     } catch (err) {
       return err
     }
