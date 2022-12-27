@@ -66,7 +66,7 @@ export class FoodController {
   ) {}
 
   private entity = 'foods'
-  private fields = ['name', 'foodType']
+  private fields = ['name']
   private relations = ['categories']
 
   @ApiConsumes('multipart/form-data')

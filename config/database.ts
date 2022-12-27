@@ -28,7 +28,7 @@ export default (): any => ({
     FoodEntity,
     SeatEntity,
     OrderEntity,
-    OrderDetailEntity
+    OrderDetailEntity,
   ],
   // autoLoadEntities: true,
 

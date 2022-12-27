@@ -16,7 +16,7 @@ export class FoodProperties {
   name: string
 
   @ApiProperty()
-  @IsEnum(FoodType)
+  // @IsEnum(FoodType)
   type: FoodType
 
   @ApiProperty()
