@@ -218,8 +218,6 @@ export class OrderService extends BaseService {
       updateFieldsCopy = Object.assign({}, { id: order.id }, updateFields)
     }
 
-    await this.repository.save({ ...order, ...updateFieldsCopy })
-
     if (data.status == OrderStatus.APPROVE) {
       const seatIds = JSON.parse(order.seatIds === null ? '[]' : order.seatIds)
       if (seatIds.length > 0) {
@@ -230,6 +228,7 @@ export class OrderService extends BaseService {
         if (invalidSeatIds) {
           throw new HttpException(
             {
+              status: HttpStatus.BAD_REQUEST,
               statusCode: HttpStatus.BAD_REQUEST,
               errorCode: 1002,
               message: 'The seats is already booked!',
@@ -256,6 +255,8 @@ export class OrderService extends BaseService {
         )
       }
     }
+
+    await this.repository.save({ ...order, ...updateFieldsCopy })
 
     if (
       data.status == OrderStatus.REJECT ||
