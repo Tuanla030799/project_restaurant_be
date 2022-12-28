@@ -126,7 +126,7 @@ export class OrderController {
     try {
       return await this.orderService.updateOrder(id, data)
     } catch (err) {
-      return err
+      throw err
     }
   }
 }
