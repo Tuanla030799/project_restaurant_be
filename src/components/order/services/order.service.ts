@@ -133,7 +133,6 @@ export class OrderService extends BaseService {
       fullName: data.fullName,
       phone: data.phone,
     })
-    await this.repository.save(order)
 
     const foodIdsParam = data.orderDetails.map((od) => od.foodId)
     const foods = await this.seatRepository.findByIds(foodIdsParam)
@@ -145,7 +144,8 @@ export class OrderService extends BaseService {
     if (notFoundFoodIds.length > 0) {
       throw new NotFoundException()
     }
-
+    
+    await this.repository.save(order)
     const orderDetails = data.orderDetails.map((od) => {
       return this.orderDetailRepository.create({
         foodId: od.foodId,
@@ -154,6 +154,7 @@ export class OrderService extends BaseService {
         quantity: od.quantity,
       })
     })
+
     await this.orderDetailRepository.save(orderDetails)
   }
 
@@ -177,6 +178,10 @@ export class OrderService extends BaseService {
 
     const notReadySeatIds = await this.notReadySeatIds(data.time, order)
 
+    const readySeats = await this.seatRepository.find({
+      where: { id: Not(In(notReadySeatIds)), isReady: true },
+    })
+
     let updateFieldsCopy = {}
     if (data.seatIds?.length > 0) {
       updateFieldsCopy = Object.assign(
@@ -194,6 +199,7 @@ export class OrderService extends BaseService {
             statusCode: HttpStatus.BAD_REQUEST,
             errorCode: 1002,
             message: 'The seats is already booked!',
+            readySeats: readySeats
           },
           HttpStatus.BAD_REQUEST,
         )
@@ -227,6 +233,7 @@ export class OrderService extends BaseService {
               statusCode: HttpStatus.BAD_REQUEST,
               errorCode: 1002,
               message: 'The seats is already booked!',
+              readySeats: readySeats
             },
             HttpStatus.BAD_REQUEST,
           )
