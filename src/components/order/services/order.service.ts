@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { isEqual } from 'lodash'
 import * as moment from 'moment'
+import { paginate, Pagination } from 'nestjs-typeorm-paginate'
 import { QueryParams } from 'src/shared/interfaces/interface'
 import { BaseService } from 'src/shared/services/base.service'
 import {
@@ -23,6 +24,7 @@ import {
 import { FoodRepository } from '../../food/repositories/food.repository'
 import { SeatEntity } from '../../seat/entities/seat.entity'
 import { SeatRepository } from '../../seat/repositories/seat.repository'
+import { GetOrdersOfUserRequestDto } from '../../user/dto/get-orders-of-user-request.dto'
 import { UserRepository } from '../../user/repositories/user.repository'
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto'
 import { UpdateOrderDetailsDto } from '../dto/orderDetail.dto'
@@ -78,14 +80,14 @@ export class OrderService extends BaseService {
     let seatsByOrder = []
     if (seatIds.length > 0) {
       seatsByOrder = await this.seatRepository.find({
-        where: { id: In(JSON.parse(order.seatIds)) },
+        where: { id: In(seatIds) }
       })
     }
 
     const notReadySeatIds = await this.notReadySeatIds(null, order)
 
     const readySeats = await this.seatRepository.find({
-      where: { id: Not(In(notReadySeatIds)), isReady: true },
+      where: { id: Not(In(notReadySeatIds)), capacity: MoreThanOrEqual(order.amount), isReady: true },
     })
 
     const filterReadySeats = readySeats.filter((s) => {
@@ -97,7 +99,7 @@ export class OrderService extends BaseService {
 
       return {
         id: seat.id,
-        capasity: seat.capasity,
+        capacity: seat.capacity,
         image: seat.image,
         content: seat.content,
         position: seat.position,
@@ -178,8 +180,9 @@ export class OrderService extends BaseService {
 
     const notReadySeatIds = await this.notReadySeatIds(data.time, order)
 
+    const amountOrder = updateFields.amount !== undefined ? updateFields.amount : order.amount
     const readySeats = await this.seatRepository.find({
-      where: { id: Not(In(notReadySeatIds)), isReady: true },
+      where: { id: Not(In(notReadySeatIds)), capacity: MoreThanOrEqual(amountOrder), isReady: true },
     })
 
     let updateFieldsCopy = {}
@@ -341,28 +344,27 @@ export class OrderService extends BaseService {
     return dateCopy
   }
 
-  async queryOrder(
-    params: QueryParams & {
-      // update include -> string[] in future
-      includes?: any
-    },
-  ): Promise<SelectQueryBuilder<OrderEntity>> {
-    const include = []
+  async getOrders(options: GetOrdersOfUserRequestDto): Promise<Pagination<OrderEntity>> {
+    let filter = 'order.deletedAt IS NULL';
 
-    if (params.includes) {
-      const arr = params.includes.split(',')
-      arr.map((i: any) => include.push(i))
+    if (options.status) {
+      filter += ` AND order.status = :status`;
     }
 
-    const { entity, fields, keyword, sortBy, sortType } = params
+    if (options.orderStartTime !== undefined) {
+      filter += ` AND (order.time)::DATE >= :orderStartTime`;
+    }
 
-    const baseQuery: SelectQueryBuilder<OrderEntity> = await this.queryBuilder({
-      entity,
-      fields,
-      keyword,
-      sortBy,
-      sortType,
-    })
-    return baseQuery
+    if (options.orderEndTime !== undefined) {
+      filter += ` AND (order.time)::DATE <= :orderEndTime`;
+    }
+  
+    const queryBuilder = this.repository.createQueryBuilder('order');
+    queryBuilder
+    .innerJoinAndSelect('order.user', 'user')
+    .where(filter).setParameters(options)
+    .orderBy('order.createdAt', 'DESC').getMany();
+
+    return paginate<OrderEntity>(queryBuilder, options);
   }
 }

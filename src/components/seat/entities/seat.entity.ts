@@ -1,5 +1,6 @@
 import { BaseTimeStampEntity } from '../../base.entity'
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, ManyToOne } from 'typeorm'
+import { OrderEntity } from '../../order/entities/order.entity'
 
 @Entity({ name: 'seats' })
 export class SeatEntity extends BaseTimeStampEntity {
@@ -17,4 +18,7 @@ export class SeatEntity extends BaseTimeStampEntity {
 
   @Column({ type: 'boolean' })
   isReady: boolean
+
+  @ManyToOne(() => OrderEntity, (order) => order.seats, { onDelete: 'CASCADE', onUpdate:'CASCADE' })
+  order: OrderEntity;
 }

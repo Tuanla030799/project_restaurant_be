@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm'
 import { RoleEntity } from '../../auth/entities/role.entity'
 import { Notifiable } from '../../../shared/services/notification/decorators/notifiable.decorator'
 import { TimeStampEntity } from '../../base.entity'
+import { OrderEntity } from '../../order/entities/order.entity'
 
 export enum UserStatus {
   active = 'ACTIVE',
@@ -63,6 +64,9 @@ export class UserEntity extends TimeStampEntity {
     },
   })
   roles: RoleEntity[]
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
 
   getEmail(): string {
     return this.email
