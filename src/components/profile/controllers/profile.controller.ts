@@ -5,6 +5,9 @@ import {
   Body,
   Put,
   BadRequestException,
+  Query,
+  ParseIntPipe,
+  Param,
 } from '@nestjs/common'
 import { ApiResponseService } from '../../../shared/services/apiResponse/apiResponse.service'
 import { UserService } from '../../user/services/user.service'
@@ -22,6 +25,9 @@ import {
 import { AuthenticatedUser } from 'src/components/auth/decorators/authenticatedUser.decorator'
 import { GetItemResponse } from 'src/shared/services/apiResponse/apiResponse.interface'
 import { Me } from 'src/components/user/dto/user.dto'
+import { GetOrdersOfUserRequestDto } from '../../user/dto/get-orders-of-user-request.dto'
+import { Pagination } from 'nestjs-typeorm-paginate'
+import { OrderEntity } from '../../order/entities/order.entity'
 
 @ApiTags('Profile')
 @ApiBearerAuth()
@@ -49,6 +55,36 @@ export class ProfileController {
     })
 
     return this.response.item(user, new UserTransformer(['roles']))
+  }
+
+  @Get('orders')
+  @ApiOperation({ summary: 'Get list orders of current user' })
+  @ApiOkResponse({ description: 'List orders of current user' })
+  async index(
+    @AuthenticatedUser() currentUser: Me,
+    @Query() query: GetOrdersOfUserRequestDto
+  ): Promise<Pagination<OrderEntity>> {
+    return await this.userService.getOrders({
+      page: query.page || 1,
+      limit: query.limit || 10,
+      status: query.status,
+      orderStartTime: query.orderStartTime,
+      orderEndTime: query.orderEndTime
+    }, currentUser.id);
+  }
+
+  @Get('orders/:orderId')
+  @ApiOperation({ summary: 'Get order by id' })
+  @ApiOkResponse({ description: 'order entity' })
+  async show(
+    @AuthenticatedUser() currentUser: Me,
+    @Param('orderId', ParseIntPipe) orderId: number
+  ) {
+    try {
+      return await this.userService.getOrder(orderId, currentUser.id)
+    } catch (err) {
+      throw err
+    }
   }
 
   @Put()

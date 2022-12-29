@@ -34,6 +34,9 @@ import { OrderTransformer } from '../transformers/order.transformer'
 import { AuthenticatedUser } from '../../auth/decorators/authenticatedUser.decorator'
 import { Me } from '../../user/dto/user.dto'
 import { UpdateOrderDetailsDto } from '../dto/orderDetail.dto'
+import { Pagination } from 'nestjs-typeorm-paginate'
+import { GetOrdersOfUserRequestDto } from '../../user/dto/get-orders-of-user-request.dto'
+import { GetOrdersResDto } from '../dto/get-orders-res.dto'
 
 @ApiTags('Orders')
 @ApiHeader({
@@ -46,47 +49,24 @@ import { UpdateOrderDetailsDto } from '../dto/orderDetail.dto'
 export class OrderController {
   constructor(
     private orderService: OrderService,
-    private response: ApiResponseService,
   ) {}
 
-  private entity = 'orders'
-
   @Get()
+  @Auth('admin')
   @ApiOperation({ summary: 'Get list orders' })
   @ApiOkResponse({ description: 'List orders with param query' })
   async index(
-    @Query() query: QueryManyDto,
-  ): Promise<GetListResponse | GetListPaginationResponse> {
-    const { search, includes, sortBy, sortType } = query
-
-    const queryBuilder: SelectQueryBuilder<OrderEntity> =
-      await this.orderService.queryOrder({
-        entity: this.entity,
-        fields: [],
-        keyword: search,
-        includes,
-        sortBy,
-        sortType,
-      })
-
-    if (query.perPage || query.page) {
-      const paginateOption: IPaginationOptions = {
-        limit: query.perPage ? query.perPage : 10,
-        page: query.page ? query.page : 1,
-      }
-
-      const data = await this.orderService.paginate(
-        queryBuilder,
-        paginateOption,
-      )
-
-      return this.response.paginate(data, new OrderTransformer())
-    }
-
-    return this.response.collection(
-      await queryBuilder.getMany(),
-      new OrderTransformer(),
-    )
+    @Query() query: GetOrdersOfUserRequestDto
+  ): Promise<GetOrdersResDto> {
+    const orders = await this.orderService.getOrders({
+      page: query.page || 1,
+      limit: query.limit || 10,
+      status: query.status,
+      orderStartTime: query.orderStartTime,
+      orderEndTime: query.orderEndTime
+    });
+    console.log("tttt")
+    return new GetOrdersResDto(orders);
   }
 
   @Get(':id')
@@ -97,7 +77,7 @@ export class OrderController {
     try {
       return await this.orderService.showOrder(id)
     } catch (err) {
-      return err
+      throw err
     }
   }
 
@@ -111,7 +91,7 @@ export class OrderController {
     try {
       return await this.orderService.createOrder(currentUser.id, data)
     } catch (err) {
-      return err
+      throw err
     }
   }
 

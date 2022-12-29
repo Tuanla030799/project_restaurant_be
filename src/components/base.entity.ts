@@ -12,20 +12,20 @@ export class IdEntity {
 
 export class BaseTimeStampEntity extends IdEntity {
   @CreateDateColumn({
-    type: 'timestamp',
+    type: 'timestamptz',
     precision: null,
     default: () => 'NOW()',
   })
   public createdAt: Date
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: 'timestamptz',
     precision: null,
     default: () => 'NOW()',
   })
   public updatedAt: Date
 }
 export class TimeStampEntity extends BaseTimeStampEntity {
-  @DeleteDateColumn({ type: 'timestamp' })
+  @DeleteDateColumn({ type: 'timestamptz' })
   public deletedAt: Date
 }
