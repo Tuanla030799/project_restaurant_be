@@ -39,9 +39,6 @@ export class OrderEntity extends BaseTimeStampEntity {
   @OneToMany(() => OrderDetailEntity, (orderDetail) => orderDetail.order)
   orderDetails: OrderDetailEntity[]
 
-  @OneToMany(() => SeatEntity, (seat) => seat.order)
-  seats: SeatEntity[]
-
   @ManyToOne(() => UserEntity, (user) => user.orders, { onDelete: 'CASCADE', onUpdate:'CASCADE' })
   user: UserEntity;
 }
