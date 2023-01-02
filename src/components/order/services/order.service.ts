@@ -80,14 +80,18 @@ export class OrderService extends BaseService {
     let seatsByOrder = []
     if (seatIds.length > 0) {
       seatsByOrder = await this.seatRepository.find({
-        where: { id: In(seatIds) }
+        where: { id: In(seatIds) },
       })
     }
 
     const notReadySeatIds = await this.notReadySeatIds(null, order)
 
     const readySeats = await this.seatRepository.find({
-      where: { id: Not(In(notReadySeatIds)), capacity: MoreThanOrEqual(order.amount), isReady: true },
+      where: {
+        id: Not(In(notReadySeatIds)),
+        capacity: MoreThanOrEqual(order.amount),
+        isReady: true,
+      },
     })
 
     const filterReadySeats = readySeats.filter((s) => {
@@ -146,7 +150,7 @@ export class OrderService extends BaseService {
     if (notFoundFoodIds.length > 0) {
       throw new NotFoundException()
     }
-    
+
     await this.repository.save(order)
     const orderDetails = data.orderDetails.map((od) => {
       return this.orderDetailRepository.create({
@@ -180,9 +184,14 @@ export class OrderService extends BaseService {
 
     const notReadySeatIds = await this.notReadySeatIds(data.time, order)
 
-    const amountOrder = updateFields.amount !== undefined ? updateFields.amount : order.amount
+    const amountOrder =
+      updateFields.amount !== undefined ? updateFields.amount : order.amount
     const readySeats = await this.seatRepository.find({
-      where: { id: Not(In(notReadySeatIds)), capacity: MoreThanOrEqual(amountOrder), isReady: true },
+      where: {
+        id: Not(In(notReadySeatIds)),
+        capacity: MoreThanOrEqual(amountOrder),
+        isReady: true,
+      },
     })
 
     let updateFieldsCopy = {}
@@ -202,7 +211,7 @@ export class OrderService extends BaseService {
             statusCode: HttpStatus.BAD_REQUEST,
             errorCode: 1002,
             message: 'The seats is already booked!',
-            readySeats: readySeats
+            readySeats: readySeats,
           },
           HttpStatus.BAD_REQUEST,
         )
@@ -235,7 +244,7 @@ export class OrderService extends BaseService {
               statusCode: HttpStatus.BAD_REQUEST,
               errorCode: 1002,
               message: 'The seats is already booked!',
-              readySeats: readySeats
+              readySeats: readySeats,
             },
             HttpStatus.BAD_REQUEST,
           )
@@ -344,27 +353,31 @@ export class OrderService extends BaseService {
     return dateCopy
   }
 
-  async getOrders(options: GetOrdersOfUserRequestDto): Promise<Pagination<OrderEntity>> {
-    let filter = 'order.deletedAt IS NULL';
+  async getOrders(
+    options: GetOrdersOfUserRequestDto,
+  ): Promise<Pagination<OrderEntity>> {
+    let filter = 'order.deletedAt IS NULL'
 
     if (options.status) {
-      filter += ` AND order.status = :status`;
+      filter += ` AND order.status = :status`
     }
 
-    if (options.orderStartTime !== undefined) {
-      filter += ` AND (order.time)::DATE >= :orderStartTime`;
+    if (options.orderStartTime) {
+      filter += ` AND (order.time)::DATE >= :orderStartTime`
     }
 
-    if (options.orderEndTime !== undefined) {
-      filter += ` AND (order.time)::DATE <= :orderEndTime`;
+    if (options.orderEndTime) {
+      filter += ` AND (order.time)::DATE <= :orderEndTime`
     }
-  
-    const queryBuilder = this.repository.createQueryBuilder('order');
+
+    const queryBuilder = this.repository.createQueryBuilder('order')
     queryBuilder
-    .innerJoinAndSelect('order.user', 'user')
-    .where(filter).setParameters(options)
-    .orderBy('order.createdAt', 'DESC').getMany();
+      .innerJoinAndSelect('order.user', 'user')
+      .where(filter)
+      .setParameters(options)
+      .orderBy('order.createdAt', 'DESC')
+      .getMany()
 
-    return paginate<OrderEntity>(queryBuilder, options);
+    return paginate<OrderEntity>(queryBuilder, options)
   }
 }

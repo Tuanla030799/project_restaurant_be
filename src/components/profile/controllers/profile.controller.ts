@@ -62,15 +62,18 @@ export class ProfileController {
   @ApiOkResponse({ description: 'List orders of current user' })
   async index(
     @AuthenticatedUser() currentUser: Me,
-    @Query() query: GetOrdersOfUserRequestDto
+    @Query() query: GetOrdersOfUserRequestDto,
   ): Promise<Pagination<OrderEntity>> {
-    return await this.userService.getOrders({
-      page: query.page || 1,
-      limit: query.limit || 10,
-      status: query.status,
-      orderStartTime: query.orderStartTime,
-      orderEndTime: query.orderEndTime
-    }, currentUser.id);
+    return await this.userService.getOrders(
+      {
+        page: query.page || 1,
+        limit: query.limit || 10,
+        status: query.status,
+        orderStartTime: query.orderStartTime,
+        orderEndTime: query.orderEndTime,
+      },
+      currentUser.id,
+    )
   }
 
   @Get('orders/:orderId')
@@ -78,7 +81,7 @@ export class ProfileController {
   @ApiOkResponse({ description: 'order entity' })
   async show(
     @AuthenticatedUser() currentUser: Me,
-    @Param('orderId', ParseIntPipe) orderId: number
+    @Param('orderId', ParseIntPipe) orderId: number,
   ) {
     try {
       return await this.userService.getOrder(orderId, currentUser.id)

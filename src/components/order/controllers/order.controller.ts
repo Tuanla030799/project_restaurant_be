@@ -47,26 +47,23 @@ import { GetOrdersResDto } from '../dto/get-orders-res.dto'
 @UseGuards(JwtAuthGuard)
 @Controller('/api/orders')
 export class OrderController {
-  constructor(
-    private orderService: OrderService,
-  ) {}
+  constructor(private orderService: OrderService) {}
 
   @Get()
   @Auth('admin')
   @ApiOperation({ summary: 'Get list orders' })
   @ApiOkResponse({ description: 'List orders with param query' })
   async index(
-    @Query() query: GetOrdersOfUserRequestDto
+    @Query() query: GetOrdersOfUserRequestDto,
   ): Promise<GetOrdersResDto> {
     const orders = await this.orderService.getOrders({
       page: query.page || 1,
       limit: query.limit || 10,
       status: query.status,
-      orderStartTime: query.orderStartTime,
-      orderEndTime: query.orderEndTime
-    });
-    console.log("tttt")
-    return new GetOrdersResDto(orders);
+      orderStartTime: query?.orderStartTime,
+      orderEndTime: query?.orderEndTime,
+    })
+    return new GetOrdersResDto(orders)
   }
 
   @Get(':id')

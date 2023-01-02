@@ -1,17 +1,17 @@
-import { Transform } from "class-transformer";
-import { IsDateString, IsOptional } from "class-validator";
+import { Transform } from 'class-transformer'
+import { IsDateString, IsOptional } from 'class-validator'
 
 export class GetOrdersOfUserRequestDto {
-  readonly page: number;
-  readonly limit: number;
+  readonly page: number
+  readonly limit: number
 
-  @Transform(({value}) => parseInt(value), {toClassOnly: true})
+  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
   @IsOptional()
-  readonly status?: number;
-
-  @IsOptional()
-  readonly orderStartTime?: Date;
+  readonly status?: number
 
   @IsOptional()
-  readonly orderEndTime?: Date;
+  readonly orderStartTime?: Date | string
+
+  @IsOptional()
+  readonly orderEndTime?: Date | string
 }

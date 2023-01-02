@@ -21,7 +21,7 @@ export class BaseUserProperties {
   email: string
 
   @ApiProperty()
-  @IsPhoneNumber()
+  // @IsPhoneNumber()
   @IsNotEmpty()
   phone: string
 
