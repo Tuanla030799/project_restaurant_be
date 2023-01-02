@@ -18,7 +18,4 @@ export class SeatEntity extends BaseTimeStampEntity {
 
   @Column({ type: 'boolean' })
   isReady: boolean
-
-  @ManyToOne(() => OrderEntity, (order) => order.seats, { onDelete: 'CASCADE', onUpdate:'CASCADE' })
-  order: OrderEntity;
 }
