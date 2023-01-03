@@ -115,6 +115,18 @@ export class BaseService {
     return item
   }
 
+  async findOneOrFailWithSlug(slug: string): Promise<any> {
+    const item = await this.repository.findOne({
+      slug,
+    })
+
+    if (!item) {
+      throw new BadRequestException(`Resource not found`)
+    }
+
+    return item
+  }
+
   /**
    * Get the items record in array ids
    *

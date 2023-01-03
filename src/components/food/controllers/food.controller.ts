@@ -230,6 +230,15 @@ export class FoodController {
     return this.response.item(food, new FoodTransformer())
   }
 
+  @Get(':slug/foodDetails')
+  @ApiOperation({ summary: 'Get food by id' })
+  @ApiOkResponse({ description: 'food entity' })
+  async readSlugFood(@Param('slug') slug: string): Promise<GetItemResponse> {
+    const food = await this.foodService.findOneOrFailWithSlug(slug)
+
+    return this.response.item(food, new FoodTransformer())
+  }
+
   @Put(':id')
   @Auth('admin')
   @ApiOperation({ summary: 'Admin update Food by id' })
