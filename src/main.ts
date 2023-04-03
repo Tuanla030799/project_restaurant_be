@@ -6,7 +6,7 @@ import { ValidationPipe } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['log', 'error', 'warn', 'debug', 'verbose']
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   })
   if (process.env.APP_ENV !== 'production') {
     const config = new DocumentBuilder()
