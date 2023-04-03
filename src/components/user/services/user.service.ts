@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { UserEntity } from '../entities/user.entity'
 import { BaseService } from '../../../shared/services/base.service'
 import { UserRepository } from '../repositories/user.repository'
@@ -36,7 +40,7 @@ export class UserService extends BaseService {
     this.orderRepository = connection.getCustomRepository(OrderRepository)
     this.seatRepository = this.connection.getCustomRepository(SeatRepository)
     this.orderDetailRepository = this.connection.getCustomRepository(
-      OrderDetailRepository
+      OrderDetailRepository,
     )
   }
 
@@ -286,13 +290,16 @@ export class UserService extends BaseService {
   }
 
   async getOrder(orderId, currentUserId) {
-    const order = await this.orderRepository.findOne({ id: orderId, userId: currentUserId })
+    const order = await this.orderRepository.findOne({
+      id: orderId,
+      userId: currentUserId,
+    })
     if (!order) {
       throw new NotFoundException()
     }
 
     const orderDetails = await this.orderDetailRepository.find({
-      where: { orderId: orderId }
+      where: { orderId: orderId },
     })
     const user = await this.repository.findOne({
       where: { id: order.userId },
@@ -312,7 +319,7 @@ export class UserService extends BaseService {
     let seatsByOrder = []
     if (seatIds.length > 0) {
       seatsByOrder = await this.seatRepository.find({
-        where: { id: In(seatIds)}
+        where: { id: In(seatIds) },
       })
     }
 
@@ -344,25 +351,32 @@ export class UserService extends BaseService {
     }
   }
 
-  async getOrders(options: GetOrdersOfUserRequestDto, currentUserId): Promise<Pagination<OrderEntity>> {
-    let filter = `order.userId = ${currentUserId}`;
+  async getOrders(
+    options: GetOrdersOfUserRequestDto,
+    currentUserId,
+  ): Promise<Pagination<OrderEntity>> {
+    let filter = `order.userId = ${currentUserId}`
 
     if (options.status) {
-      filter += ` AND order.status = :status`;
+      filter += ` AND order.status = :status`
     }
 
     if (options.orderStartTime !== undefined) {
-      filter += ` AND (order.time)::DATE >= :orderStartTime`;
+      filter += ` AND (order.time)::DATE >= :orderStartTime`
     }
 
     if (options.orderEndTime !== undefined) {
-      filter += ` AND (order.time)::DATE <= :orderEndTime`;
+      filter += ` AND (order.time)::DATE <= :orderEndTime`
     }
-  
-    const queryBuilder = this.orderRepository.createQueryBuilder('order');
-    queryBuilder.innerJoinAndSelect('order.user', 'user').where(filter).setParameters(options)
-    .orderBy('order.createdAt', 'DESC').getMany();
 
-    return paginate<OrderEntity>(queryBuilder, options);
+    const queryBuilder = this.orderRepository.createQueryBuilder('order')
+    queryBuilder
+      .innerJoinAndSelect('order.user', 'user')
+      .where(filter)
+      .setParameters(options)
+      .orderBy('order.createdAt', 'DESC')
+      .getMany()
+
+    return paginate<OrderEntity>(queryBuilder, options)
   }
 }
