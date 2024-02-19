@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+if test -t 1; then
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test "$ncolors" -ge 8; then
+        BOLD="$(tput bold)"
+        YELLOW="$(tput setaf 3)"
+        GREEN="$(tput setaf 2)"
+        NC="$(tput sgr0)"
+    fi
+fi
+
+function display_help {
+    echo "Main menu"
+    echo
+    echo "${YELLOW}Usage:${NC}" >&2
+    echo "  ./main COMMAND [options] [arguments]"
+    echo
+    echo "Unknown commands are passed to the docker-compose binary."
+    echo
+    echo "${YELLOW}docker-compose Commands:${NC}"
+    echo "  ${GREEN}./main up${NC}        Start the application"
+    echo "  ${GREEN}./main up -d${NC}     Start the application in the background"
+    echo "  ${GREEN}./main stop${NC}      Stop the application"
+    echo "  ${GREEN}./main restart${NC}   Restart the application"
+    echo "  ${GREEN}./main ps${NC}        Display the status of all containers"
+    echo
+    echo "${YELLOW}Node Commands:${NC}"
+    echo "  ${GREEN}./main node ...${NC}        Run a Node command"
+    echo "  ${GREEN}./main node --version${NC}"
+    echo
+    echo "${YELLOW}YARN Commands:${NC}"
+    echo "  ${GREEN}./main yarn ...${NC}        Run a yarn command"
+    echo "  ${GREEN}./main npx ...${NC}        Run a npx command"
+    echo "  ${GREEN}./main yarn run prod${NC}"
+    echo
+    echo "${YELLOW}Mysql CLI:${NC}"
+    echo "  ${GREEN}./main mysql${NC}     Start a MySQL CLI session within the 'mysql' container"
+    echo
+    echo "${YELLOW}Redis CLI:${NC}"
+    echo "  ${GREEN}./main redis${NC}     Start a Redis CLI session within the 'redis' container"
+    echo
+    echo "${YELLOW}Container CLI:${NC}"
+    echo "  ${GREEN}./main shell${NC}     Start a shell session within the application container"
+    echo "  ${GREEN}./main bash${NC}      Alias for './main shell'"
+
+    exit 1
+}
+
+if [ $# -gt 0 ]; then
+    if [ "$1" == "help" ] || [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
+        display_help
+    fi
+else
+    display_help
+fi
+
+if [ -f ./.env ]; then
+  source ./.env;
+fi
+
+
+export APP_SERVICE="api"
+
+function is_not_running {
+    echo "${BOLD}Project is not running.${NC}" >&2
+    echo "" >&2
+    echo "${BOLD}You may start using the following commands:${NC} './main up' or './main up -d'" >&2
+
+    exit 1
+}
+
+# Define Docker Compose command prefix...
+docker compose &> /dev/null
+if [ $? == 0 ]; then
+    DOCKER_COMPOSE=(docker compose)
+else
+    DOCKER_COMPOSE=(docker-compose)
+fi
+
+EXEC="yes"
+
+if ! docker info > /dev/null 2>&1; then
+    echo "${BOLD}Docker is not running.${NC}" >&2
+
+    exit 1
+fi
+
+if "${DOCKER_COMPOSE[@]}" ps "$APP_SERVICE" 2>&1 | grep 'Exit\|exited'; then
+    echo "${BOLD}Shutting down old docker-compose processes...${NC}" >&2
+
+    "${DOCKER_COMPOSE[@]}" down > /dev/null 2>&1
+
+    EXEC="no"
+elif [ -z "$("${DOCKER_COMPOSE[@]}" ps -q)" ]; then
+    EXEC="no"
+fi
+
+ARGS=()
+
+if [ "$1" == "docker-compose" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec -u root)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=("$APP_SERVICE" "${DOCKER_COMPOSE[@]}")
+    else
+        is_not_running
+    fi
+
+elif [ "$1" == "node" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec -u root)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=("$APP_SERVICE" node "$@")
+    else
+        is_not_running
+    fi
+
+elif [ "$1" == "yarn" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec -u root)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=("$APP_SERVICE" yarn "$@")
+    else
+        is_not_running
+    fi
+
+elif [ "$1" == "npx" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec -u root)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=("$APP_SERVICE" npx "$@")
+    else
+        is_not_running
+    fi
+
+elif [ "$1" == "postgres" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=(postgres bash -c)
+        ARGS+=("psql -U ${DB_USERNAME} ${DB_DATABASE}")
+    else
+        is_not_running
+    fi
+
+elif [ "$1" == "shell" ] || [ "$1" == "bash" ]; then
+    shift 1
+
+    if [ "$EXEC" == "yes" ]; then
+        ARGS+=(exec)
+        [ ! -t 0 ] && ARGS+=(-T)
+        ARGS+=("$APP_SERVICE" sh "$@")
+    else
+        is_not_running
+    fi
+
+else
+    ARGS+=("$@")
+fi
+
+"${DOCKER_COMPOSE[@]}" "${ARGS[@]}"
